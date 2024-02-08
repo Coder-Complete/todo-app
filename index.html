@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body class="light-theme">
+    <header></header>
+    <main>
+      <div class="main-container">
+        <div class="main-header">
+          <span class="title">T O D O</span>
+          <span class="mode-icon"></span>
+        </div>
+        <label for="new-todo-input">
+          <div class="sep bar create">
+            <span class="circle"></span>
+            <input
+              id="new-todo-input"
+              type="text"
+              name="new-todo-text"
+              placeholder="Create a new todo..."
+            />
+          </div>
+        </label>
+        <div class="middle-container">
+          <div class="todo-container">
+            <div class="bar todo completed">
+              <span class="circle"></span>
+              <span class="todo-text">Complete online javascript course</span>
+              <span class="delete-button"
+                ><img src="images/icon-cross.svg" alt=""
+              /></span>
+            </div>
+            <div class="bar todo">
+              <span class="circle"></span>
+              <span class="todo-text">Jog around the park 3x</span>
+              <span class="delete-button"
+                ><img src="images/icon-cross.svg" alt=""
+              /></span>
+            </div>
+            <div class="bar todo">
+              <span class="circle"></span>
+              <span class="todo-text">10 minutes meditation</span>
+              <span class="delete-button"
+                ><img src="images/icon-cross.svg" alt=""
+              /></span>
+            </div>
+            <div class="bar todo">
+              <span class="circle"></span>
+              <span class="todo-text">Read for 1 hour</span>
+              <span class="delete-button"
+                ><img src="images/icon-cross.svg" alt=""
+              /></span>
+            </div>
+            <div class="bar todo">
+              <span class="circle"></span>
+              <span class="todo-text">Pick up groceries</span>
+              <span class="delete-button"
+                ><img src="images/icon-cross.svg" alt=""
+              /></span>
+            </div>
+            <div class="bar todo">
+              <span class="circle"></span>
+              <span class="todo-text"
+                >Complete Todo App on Frontend Mentor</span
+              >
+              <span class="delete-button"
+                ><img src="images/icon-cross.svg" alt=""
+              /></span>
+            </div>
+          </div>
+          <div class="bar stats">
+            <span class="items-left">5 items left</span>
+            <span class="clear-completed-button">Clear Completed</span>
+          </div>
+        </div>
+        <div class="sep bar filters">
+          <span class="filter selected">All</span>
+          <span class="filter">Active</span>
+          <span class="filter">Completed</span>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

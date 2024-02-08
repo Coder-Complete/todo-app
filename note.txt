@@ -1,0 +1,15 @@
+things to do with js
+- create new todo
+- toggle todos as completed/not completed
+- delete todo (with X button)
+- clear completed todos button
+- calculate items left
+- filter the list active/completed
+- light/dark mode
+
+1. solve without data approach
+2. solve with data approach
+3. future extensions
+  - introduce caching
+  - add date created and sorting
+  - add tags/categories
