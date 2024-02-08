@@ -1,4 +1,5 @@
 const todoContainer = document.querySelector(".todo-container");
+const createTodoForm = document.querySelector(".create-todo-form");
 
 let todosData = [
   {
@@ -41,8 +42,17 @@ function makeTodo(todoData) {
   return newTodo;
 }
 
-function makeList() {
+function makeTodoList() {
+  todoContainer.innerHTML = "";
   todosData.forEach((todoData) => todoContainer.append(makeTodo(todoData)));
 }
 
-makeList();
+makeTodoList();
+
+createTodoForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  let formData = new FormData(e.target);
+  let text = formData.get("new-todo-text");
+  todosData.unshift({ text, completed: false });
+  makeTodoList();
+});
