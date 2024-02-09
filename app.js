@@ -1,14 +1,21 @@
 const createTodoForm = document.querySelector(".create-todo");
 const todoContainer = document.querySelector(".todo-container");
+const todos = document.querySelectorAll(".todo");
 
 function newTodo(todoText) {
-  return `<div class="bar todo">
+  let newTodoElement = document.createElement("div");
+  newTodoElement.className = "bar todo";
+  newTodoElement.innerHTML = `
       <span class="circle"></span>
       <span class="todo-text">${todoText}</span>
       <span class="delete-button"
-        ><img src="images/icon-cross.svg" alt=""
-      /></span>
-    </div>`;
+        ><img src="images/icon-cross.svg" alt=""/>
+      </span>
+  `;
+  newTodoElement.addEventListener("click", (e) => {
+    newTodoElement.classList.toggle("completed");
+  });
+  return newTodoElement;
 }
 
 function validateText(text) {
@@ -20,7 +27,13 @@ createTodoForm.addEventListener("submit", (e) => {
   let data = new FormData(e.target);
   let text = data.get("new-todo-text");
   if (validateText(text)) {
-    todoContainer.innerHTML += newTodo(text);
+    todoContainer.append(newTodo(text));
   }
   createTodoForm.reset();
+});
+
+todos.forEach((todo) => {
+  todo.addEventListener("click", (e) => {
+    todo.classList.toggle("completed");
+  });
 });
