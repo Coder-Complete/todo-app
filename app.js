@@ -1,7 +1,11 @@
 const createTodoForm = document.querySelector(".create-todo");
 const todoContainer = document.querySelector(".todo-container");
-const todos = document.querySelectorAll(".todo");
 const deleteButtons = document.querySelectorAll(".delete-button");
+const clearCompletedButton = document.querySelector(".clear-completed-button");
+
+function getTodos() {
+  return document.querySelectorAll(".todo");
+}
 
 function newTodo(todoText) {
   let newTodoElement = document.createElement("div");
@@ -33,6 +37,7 @@ createTodoForm.addEventListener("submit", (e) => {
   createTodoForm.reset();
 });
 
+let todos = getTodos();
 todos.forEach((todo) => {
   todo.addEventListener("click", (e) => {
     if (
@@ -42,6 +47,14 @@ todos.forEach((todo) => {
       todo.remove();
     } else {
       todo.classList.toggle("completed");
+    }
+  });
+});
+
+clearCompletedButton.addEventListener("click", (e) => {
+  getTodos().forEach((todo) => {
+    if (todo.classList.contains("completed")) {
+      todo.remove();
     }
   });
 });
