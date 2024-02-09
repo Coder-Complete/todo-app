@@ -13,3 +13,4 @@ things to do with js
   - introduce caching
   - add date created and sorting
   - add tags/categories
+  - drag and drop ordering
