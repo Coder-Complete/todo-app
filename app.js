@@ -4,6 +4,7 @@ const deleteButtons = document.querySelectorAll(".delete-button");
 const clearCompletedButton = document.querySelector(".clear-completed-button");
 const itemsLeftPlaceholder = document.querySelector(".items-left");
 const filters = document.querySelectorAll(".filter");
+const modeIcon = document.querySelector(".mode-icon");
 
 function getCurrentlySelectedFilter() {
   return document.querySelector(".filter.selected");
@@ -138,3 +139,11 @@ function filterClickHandler(e) {
 filters.forEach((filter) => {
   filter.addEventListener("click", filterClickHandler);
 });
+
+function changeMode(e) {
+  document.body.classList = document.body.classList.contains("light-theme")
+    ? "dark-theme"
+    : "light-theme";
+}
+
+modeIcon.addEventListener("click", changeMode);
