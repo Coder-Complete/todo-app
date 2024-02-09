@@ -28,32 +28,40 @@ let todosData = [
   },
 ];
 
-function makeTodo(todoData) {
-  let newTodo = document.createElement("div");
-  newTodo.classList.add("bar", "todo");
-  if (todoData.completed) newTodo.classList.add("bar", "completed");
-  newTodo.innerHTML = `
+function todoClickHandler(e, todoIndex) {
+  todosData[todoIndex].completed = !todosData[todoIndex].completed;
+  updateTodoList();
+}
+
+function makeTodo(todoData, todoIndex) {
+  let todo = document.createElement("div");
+  todo.classList.add("bar", "todo");
+  if (todoData.completed) todo.classList.add("bar", "completed");
+  todo.innerHTML = `
     <span class="circle"></span>
     <span class="todo-text">${todoData.text}</span>
     <span class="delete-button">
       <img src="images/icon-cross.svg" alt=""/>
     </span>
   `;
-  return newTodo;
+  todo.addEventListener("click", (e) => todoClickHandler(e, todoIndex));
+  return todo;
 }
 
-function makeTodoList() {
+function updateTodoList() {
   todoContainer.innerHTML = "";
-  todosData.forEach((todoData) => todoContainer.append(makeTodo(todoData)));
+  todosData.forEach((todoData, todoIndex) =>
+    todoContainer.append(makeTodo(todoData, todoIndex))
+  );
 }
 
-makeTodoList();
+updateTodoList();
 
 createTodoForm.addEventListener("submit", (e) => {
   e.preventDefault();
   let formData = new FormData(e.target);
   let text = formData.get("new-todo-text");
   todosData.unshift({ text, completed: false });
-  makeTodoList();
+  updateTodoList();
   createTodoForm.reset();
 });
