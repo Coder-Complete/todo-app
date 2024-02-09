@@ -1,5 +1,6 @@
 const todoContainer = document.querySelector(".todo-container");
 const createTodoForm = document.querySelector(".create-todo-form");
+const clearCompletedButton = document.querySelector(".clear-completed-button");
 
 let todosData = [
   {
@@ -71,4 +72,9 @@ createTodoForm.addEventListener("submit", (e) => {
   todosData.unshift({ text, completed: false });
   updateTodoList();
   createTodoForm.reset();
+});
+
+clearCompletedButton.addEventListener("click", (e) => {
+  todosData = todosData.filter((todoData) => !todoData.completed);
+  updateTodoList();
 });
