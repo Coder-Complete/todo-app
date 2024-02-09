@@ -3,6 +3,7 @@ const createTodoForm = document.querySelector(".create-todo-form");
 const clearCompletedButton = document.querySelector(".clear-completed-button");
 const itemsLeftPlaceholder = document.querySelector(".items-left");
 const filters = document.querySelectorAll(".filter");
+const modeIcon = document.querySelector(".mode-icon");
 
 function generateUUID() {
   const s4 = () =>
@@ -143,3 +144,10 @@ filters.forEach((filter) =>
     }
   })
 );
+
+function changeMode(e) {
+  document.body.className =
+    document.body.className === "light-theme" ? "dark-theme" : "light-theme";
+}
+
+modeIcon.addEventListener("click", changeMode);
