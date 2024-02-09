@@ -2,10 +2,30 @@ const createTodoForm = document.querySelector(".create-todo");
 const todoContainer = document.querySelector(".todo-container");
 const deleteButtons = document.querySelectorAll(".delete-button");
 const clearCompletedButton = document.querySelector(".clear-completed-button");
+const itemsLeft = document.querySelector(".items-left");
 
 function getTodos() {
   return document.querySelectorAll(".todo");
 }
+
+function getItemsLeft() {
+  let itemsLeft = 0;
+  getTodos().forEach((todo) => {
+    if (!todo.classList.contains("completed")) {
+      itemsLeft++;
+    }
+  });
+  return itemsLeft;
+
+  /*
+    ANOTHER WAY
+    return Array.from(getTodos()).filter(
+      (todo) => !todo.classList.contains("completed")
+    ).length;
+  */
+}
+
+itemsLeft.innerText = getItemsLeft().toString();
 
 function newTodo(todoText) {
   let newTodoElement = document.createElement("div");
