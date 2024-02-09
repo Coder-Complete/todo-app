@@ -1,6 +1,7 @@
 const createTodoForm = document.querySelector(".create-todo");
 const todoContainer = document.querySelector(".todo-container");
 const todos = document.querySelectorAll(".todo");
+const deleteButtons = document.querySelectorAll(".delete-button");
 
 function newTodo(todoText) {
   let newTodoElement = document.createElement("div");
@@ -34,6 +35,13 @@ createTodoForm.addEventListener("submit", (e) => {
 
 todos.forEach((todo) => {
   todo.addEventListener("click", (e) => {
-    todo.classList.toggle("completed");
+    if (
+      e.target.classList.contains("delete-button") ||
+      e.target.classList.contains("delete-image")
+    ) {
+      todo.remove();
+    } else {
+      todo.classList.toggle("completed");
+    }
   });
 });
