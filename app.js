@@ -55,4 +55,5 @@ createTodoForm.addEventListener("submit", (e) => {
   let text = formData.get("new-todo-text");
   todosData.unshift({ text, completed: false });
   makeTodoList();
+  createTodoForm.reset();
 });
