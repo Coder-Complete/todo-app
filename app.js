@@ -2,7 +2,7 @@ const createTodoForm = document.querySelector(".create-todo");
 const todoContainer = document.querySelector(".todo-container");
 const deleteButtons = document.querySelectorAll(".delete-button");
 const clearCompletedButton = document.querySelector(".clear-completed-button");
-const itemsLeft = document.querySelector(".items-left");
+const itemsLeftPlaceholder = document.querySelector(".items-left");
 
 function getTodos() {
   return document.querySelectorAll(".todo");
@@ -16,30 +16,40 @@ function getItemsLeft() {
     }
   });
   return itemsLeft;
-
-  /*
-    ANOTHER WAY
-    return Array.from(getTodos()).filter(
-      (todo) => !todo.classList.contains("completed")
-    ).length;
-  */
 }
 
-itemsLeft.innerText = getItemsLeft().toString();
+function updateItemsLeft() {
+  let itemsLeft = getItemsLeft();
+  itemsLeftPlaceholder.innerText = getItemsLeft().toString();
+}
 
-function newTodo(todoText) {
+updateItemsLeft();
+
+function todoClickHandler(event, todo) {
+  if (
+    event.target.classList.contains("delete-button") ||
+    event.target.classList.contains("delete-image")
+  ) {
+    todo.remove();
+  } else {
+    todo.classList.toggle("completed");
+  }
+  updateItemsLeft();
+}
+
+function createNewTodoElement(todoText) {
   let newTodoElement = document.createElement("div");
   newTodoElement.className = "bar todo";
   newTodoElement.innerHTML = `
       <span class="circle"></span>
       <span class="todo-text">${todoText}</span>
       <span class="delete-button"
-        ><img src="images/icon-cross.svg" alt=""/>
+        ><img class="delete-image" src="images/icon-cross.svg" alt=""/>
       </span>
   `;
-  newTodoElement.addEventListener("click", (e) => {
-    newTodoElement.classList.toggle("completed");
-  });
+  newTodoElement.addEventListener("click", (e) =>
+    todoClickHandler(e, newTodoElement)
+  );
   return newTodoElement;
 }
 
@@ -52,23 +62,15 @@ createTodoForm.addEventListener("submit", (e) => {
   let data = new FormData(e.target);
   let text = data.get("new-todo-text");
   if (validateText(text)) {
-    todoContainer.append(newTodo(text));
+    todoContainer.append(createNewTodoElement(text));
   }
   createTodoForm.reset();
+  updateItemsLeft();
 });
 
 let todos = getTodos();
 todos.forEach((todo) => {
-  todo.addEventListener("click", (e) => {
-    if (
-      e.target.classList.contains("delete-button") ||
-      e.target.classList.contains("delete-image")
-    ) {
-      todo.remove();
-    } else {
-      todo.classList.toggle("completed");
-    }
-  });
+  todo.addEventListener("click", (e) => todoClickHandler(e, todo));
 });
 
 clearCompletedButton.addEventListener("click", (e) => {
