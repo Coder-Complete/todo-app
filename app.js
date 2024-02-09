@@ -16,4 +16,5 @@ createTodoForm.addEventListener("submit", (e) => {
   let data = new FormData(e.target);
   let text = data.get("new-todo-text");
   todoContainer.innerHTML += newTodo(text);
+  createTodoForm.reset();
 });
