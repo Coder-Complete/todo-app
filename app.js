@@ -29,7 +29,14 @@ let todosData = [
 ];
 
 function todoClickHandler(e, todoIndex) {
-  todosData[todoIndex].completed = !todosData[todoIndex].completed;
+  if (
+    e.target.classList.contains("delete-button") ||
+    e.target.classList.contains("delete-image")
+  ) {
+    todosData = todosData.filter((_, index) => index !== todoIndex);
+  } else {
+    todosData[todoIndex].completed = !todosData[todoIndex].completed;
+  }
   updateTodoList();
 }
 
@@ -41,7 +48,7 @@ function makeTodo(todoData, todoIndex) {
     <span class="circle"></span>
     <span class="todo-text">${todoData.text}</span>
     <span class="delete-button">
-      <img src="images/icon-cross.svg" alt=""/>
+      <img class="delete-image" src="images/icon-cross.svg" alt=""/>
     </span>
   `;
   todo.addEventListener("click", (e) => todoClickHandler(e, todoIndex));
