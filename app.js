@@ -11,10 +11,16 @@ function newTodo(todoText) {
     </div>`;
 }
 
+function validateText(text) {
+  return text.length > 0;
+}
+
 createTodoForm.addEventListener("submit", (e) => {
   e.preventDefault();
   let data = new FormData(e.target);
   let text = data.get("new-todo-text");
-  todoContainer.innerHTML += newTodo(text);
+  if (validateText(text)) {
+    todoContainer.innerHTML += newTodo(text);
+  }
   createTodoForm.reset();
 });
