@@ -1,15 +1,19 @@
 things to do with js
-- create new todo
-- toggle todos as completed/not completed
-- delete todo (with X button)
-- clear completed todos button
-- calculate items left
-- filter the list active/completed
-- light/dark mode
+- x - light/dark mode
+- x - create new todo
+- x - toggle todos as completed/not completed
+- x - delete todo (with X button)
+- x - clear completed todos button
+- x - calculate items left
+- x - filter the list active/completed
 
 1. solve without data approach
 2. solve with data approach
 3. future extensions
-  - introduce caching
+  - drag and drop sorting
   - add date created and sorting
   - add tags/categories
+  - introduce caching
+    - to similuates db - starting with saved data
+  - backend
+  - user accounts

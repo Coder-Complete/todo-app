@@ -15,17 +15,19 @@
           <span class="title">T O D O</span>
           <span class="mode-icon"></span>
         </div>
-        <label for="new-todo-input">
-          <div class="sep bar create">
-            <span class="circle"></span>
-            <input
-              id="new-todo-input"
-              type="text"
-              name="new-todo-text"
-              placeholder="Create a new todo..."
-            />
-          </div>
-        </label>
+        <form id="create-todo-form" action="">
+          <label for="new-todo-input">
+            <div class="sep bar create">
+              <span class="circle"></span>
+              <input
+                id="new-todo-input"
+                type="text"
+                name="new-todo-text"
+                placeholder="Create a new todo..."
+              />
+            </div>
+          </label>
+        </form>
         <div class="middle-container">
           <div class="todo-container">
             <div class="bar todo completed">
@@ -39,8 +41,8 @@
               <span class="circle"></span>
               <span class="todo-text">Jog around the park 3x</span>
               <span class="delete-button"
-                ><img src="images/icon-cross.svg" alt=""
-              /></span>
+                ><img src="images/icon-cross.svg" alt="" />
+              </span>
             </div>
             <div class="bar todo">
               <span class="circle"></span>
@@ -74,7 +76,7 @@
             </div>
           </div>
           <div class="bar stats">
-            <span class="items-left">5 items left</span>
+            <span><span class="items-left"></span> items left</span>
             <span class="clear-completed-button">Clear Completed</span>
           </div>
         </div>
