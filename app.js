@@ -19,6 +19,12 @@ modeIcon.addEventListener("click", function (event) {
 function todoClickHandler(event, todo) {
   todo.classList.toggle("completed");
   updateItemsLeft();
+  const currentFilter = document
+    .querySelector(".selected")
+    .innerText.toLowerCase();
+  if (currentFilter !== "all") {
+    changeTodoListBasedOnFilter(currentFilter);
+  }
 }
 
 createTodoForm.addEventListener("submit", function (event) {
@@ -40,6 +46,12 @@ createTodoForm.addEventListener("submit", function (event) {
 
     todoContainer.prepend(newTodo);
     updateItemsLeft();
+    const currentFilter = document
+      .querySelector(".selected")
+      .innerText.toLowerCase();
+    if (currentFilter === "completed") {
+      changeTodoListBasedOnFilter(currentFilter);
+    }
   }
   createTodoForm.reset();
 });
@@ -84,17 +96,17 @@ function determineClickedFilter(event) {
   return event.target.innerText.toLowerCase();
 }
 
-function changeTodoListBasedOnFilter(clickedFilter) {
+function changeTodoListBasedOnFilter(filter) {
   let currentTodos = document.querySelectorAll(".todo");
   currentTodos.forEach(function (todo) {
     let todoIsCompleted = todo.classList.contains("completed");
-    if (clickedFilter === "completed" && todoIsCompleted) {
+    if (filter === "completed" && todoIsCompleted) {
       todo.style.display = "flex";
-    } else if (clickedFilter === "completed" && !todoIsCompleted) {
+    } else if (filter === "completed" && !todoIsCompleted) {
       todo.style.display = "none";
-    } else if (clickedFilter === "active" && todoIsCompleted) {
+    } else if (filter === "active" && todoIsCompleted) {
       todo.style.display = "none";
-    } else if (clickedFilter === "active" && !todoIsCompleted) {
+    } else if (filter === "active" && !todoIsCompleted) {
       todo.style.display = "flex";
     } else {
       todo.style.display = "flex";
