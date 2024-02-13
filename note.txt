@@ -1,7 +1,7 @@
 - make with data approach completely
   - explain state
 - explain that it’s a good precursor to react
-- explain why it’s not ideal either for animations and rendering cost
+- explain why it’s not ideal either for animations (adding & removing) and rendering cost
   - react abides by a similar pattern but does not have these issues
     - there is a way to animate
     - it has a way to only re-render certain things, not everything

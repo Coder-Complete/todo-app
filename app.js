@@ -20,11 +20,6 @@ let todosData = [
   {
     id: generateUUID(),
     text: "Complete online javascript course",
-    completed: false,
-  },
-  {
-    id: generateUUID(),
-    text: "Complete online javascript course",
     completed: true,
   },
   {
@@ -60,9 +55,9 @@ function getThemeFromDatabase() {
   return receivedTheme;
 }
 
-let theme = getThemeFromDatabase();
+let currentTheme = getThemeFromDatabase();
 
-if (theme === "light-theme") {
+if (currentTheme === "light-theme") {
   document.body.className = "light-theme";
 } else {
   document.body.className = "dark-theme";
@@ -91,8 +86,7 @@ createTodoForm.addEventListener("submit", function (event) {
   createTodoForm.reset();
 });
 
-function renderTodos() {
-  todoContainer.innerHTML = "";
+function displayTodos(todosData) {
   todosData.forEach(function (todoData) {
     let newTodo = document.createElement("div");
     newTodo.id = todoData.id;
@@ -112,6 +106,46 @@ function renderTodos() {
     });
     todoContainer.append(newTodo);
   });
+}
+
+function updateFilterUI() {
+  filters.forEach(function (filter) {
+    if (filter.innerText.toLowerCase() === selectedFilter) {
+      filter.classList.add("selected");
+    } else {
+      filter.classList.remove("selected");
+    }
+  });
+}
+
+let selectedFilter = "all"; // 'all', 'active', 'completed'
+
+filters.forEach(function (filter) {
+  filter.addEventListener("click", function (event) {
+    let clickedFilter = event.target.innerText.toLowerCase();
+    if (clickedFilter !== selectedFilter) {
+      selectedFilter = clickedFilter;
+      renderTodos();
+      updateFilterUI();
+    }
+  });
+});
+
+function renderTodos() {
+  todoContainer.innerHTML = "";
+  if (selectedFilter === "active") {
+    let activeTodos = todosData.filter(function (todoData) {
+      return !todoData.completed;
+    });
+    displayTodos(activeTodos);
+  } else if (selectedFilter === "completed") {
+    let completedTodos = todosData.filter(function (todoData) {
+      return todoData.completed;
+    });
+    displayTodos(completedTodos);
+  } else {
+    displayTodos(todosData);
+  }
 }
 
 function todoClickHandler(event, todo) {
