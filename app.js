@@ -16,11 +16,16 @@ modeIcon.addEventListener("click", function (event) {
   }
 });
 
+function todoClickHandler(event, todo) {
+  todo.classList.toggle("completed");
+  updateItemsLeft();
+}
+
 createTodoForm.addEventListener("submit", function (event) {
   event.preventDefault();
-  const newTodo = document.createElement("div");
   const newTodoText = newTodoTextInput.value;
   if (newTodoText.trim().length > 0) {
+    const newTodo = document.createElement("div");
     newTodo.className = "bar todo";
     newTodo.innerHTML = `
     <span class="circle"></span>
@@ -29,6 +34,10 @@ createTodoForm.addEventListener("submit", function (event) {
       <img src="images/icon-cross.svg" alt=""/>
     </span>
   `;
+    newTodo.addEventListener("click", function (event) {
+      todoClickHandler(event, newTodo);
+    });
+
     todoContainer.prepend(newTodo);
   }
   createTodoForm.reset();
@@ -44,9 +53,7 @@ function updateItemsLeft() {
 
 todos.forEach(function (todo) {
   todo.addEventListener("click", function (event) {
-    console.log("todo clicked");
-    todo.classList.toggle("completed");
-    updateItemsLeft();
+    todoClickHandler(event, todo);
   });
 });
 
