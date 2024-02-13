@@ -39,6 +39,7 @@ createTodoForm.addEventListener("submit", function (event) {
     });
 
     todoContainer.prepend(newTodo);
+    updateItemsLeft();
   }
   createTodoForm.reset();
 });
