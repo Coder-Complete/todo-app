@@ -1,13 +1,10 @@
-- make with data approach completely
-  - explain state
-- explain that it’s a good precursor to react
-- explain why it’s not ideal either for animations (adding & removing) and rendering cost
-  - react abides by a similar pattern but does not have these issues
-    - there is a way to animate
-    - it has a way to only re-render certain things, not everything
-- backtrack data-centric idea to best solution
-- incorporate localstorage
+vid 3 - localstorage
 
+vid 4 - clean code
+  - enums -> filters (object)
+  - oop -> update localstorage, update data array
+  - show how things can be now be broken into files (the object declarations can be sep files)
+  - explain / show webpack preprocessing
 
 things to do with js
 - x - light/dark mode
