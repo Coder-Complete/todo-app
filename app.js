@@ -8,6 +8,43 @@ const clearCompletedButton = document.querySelector(".clear-completed-button");
 const itemsLeftPlaceholder = document.querySelector(".items-left");
 const filters = document.querySelectorAll(".filter");
 
+const Themes = {
+  LIGHT: "light-theme",
+  DARK: "dark-theme",
+};
+
+const Filters = {
+  ALL: "all",
+  ACTIVE: "active",
+  COMPLETED: "completed",
+};
+
+const DataKeys = {
+  SELECTED_FILTER: "filter",
+  SELECTED_THEME: "theme",
+  TODOS: "todos",
+};
+
+const ClassNames = {
+  filter: {
+    SELECTED: "selected",
+  },
+  deleteButton: {
+    BUTTON: "delete-button",
+    IMAGE: "delete-image",
+  },
+  todo: {
+    BASE: ["bar", "todo"],
+    COMPLETED: "completed",
+    TEXT: "todo-text",
+    CIRCLE: "circle",
+  },
+};
+
+const Images = {
+  cross: { path: "images/icon-cross.svg", altText: "" },
+};
+
 function generateUUID() {
   const s4 = () =>
     Math.floor((1 + Math.random()) * 0x10000)
@@ -30,16 +67,16 @@ function setLocalStorage(key, data) {
   localStorage.setItem(key, JSON.stringify(data));
 }
 
-let todosData = getLocalStorage("todos") || [];
-let theme = getLocalStorage("theme") || "light-theme";
-let selectedFilter = getLocalStorage("filter") || "all"; // 'all', 'active', 'completed'
+let todosData = getLocalStorage(DataKeys.todos) || [];
+let theme = getLocalStorage(DataKeys.SELECTED_THEME) || Themes.LIGHT;
+let selectedFilter = getLocalStorage(DataKeys.SELECTED_FILTER) || Filters.ALL;
 
 document.body.className = theme;
 
 modeIcon.addEventListener("click", (event) => {
-  theme === "light-theme" ? "dark-theme" : "light-theme";
+  theme === Themes.LIGHT ? Themes.DARK : Themes.LIGHT;
   document.body.className = theme;
-  setLocalStorage("theme", theme);
+  setLocalStorage(DataKeys.SELECTED_THEME, theme);
 });
 
 createTodoForm.addEventListener("submit", (event) => {
@@ -53,7 +90,7 @@ createTodoForm.addEventListener("submit", (event) => {
     });
     renderTodos();
     updateItemsLeft();
-    setLocalStorage("todos", todosData);
+    setLocalStorage(DataKeys.TODOS, todosData);
   }
   createTodoForm.reset();
 });
@@ -62,15 +99,15 @@ function displayTodos(todosData) {
   todosData.forEach((todoData) => {
     let newTodo = document.createElement("div");
     newTodo.id = todoData.id;
-    newTodo.classList.add("bar", "todo");
+    newTodo.classList.add(ClassNames.todo.BASE);
     if (todoData.completed) {
-      newTodo.classList.add("completed");
+      newTodo.classList.add(ClassNames.todo.COMPLETED);
     }
     newTodo.innerHTML = `
-      <span class="circle"></span>
-      <span class="todo-text">${todoData.text}</span>
-      <span class="delete-button">
-        <img class="delete-image" src="images/icon-cross.svg" alt=""/>
+      <span class="${ClassNames.todo.CIRCLE}"></span>
+      <span class="${ClassNames.todo.TEXT}">${todoData.text}</span>
+      <span class="${ClassNames.deleteButton.BUTTON}">
+        <img class="${ClassNames.deleteButton.IMAGE}" src="${Images.cross.path}" alt="${Images.cross.altText}"/>
       </span>
     `;
     newTodo.addEventListener("click", (event) =>
@@ -83,9 +120,9 @@ function displayTodos(todosData) {
 function updateFilterUI() {
   filters.forEach((filter) => {
     if (filter.innerText.toLowerCase() === selectedFilter) {
-      filter.classList.add("selected");
+      filter.classList.add(ClassNames.filter.SELECTED);
     } else {
-      filter.classList.remove("selected");
+      filter.classList.remove(ClassNames.filter.SELECTED);
     }
   });
 }
@@ -97,7 +134,7 @@ filters.forEach(function (filter) {
       selectedFilter = clickedFilter;
       renderTodos();
       updateFilterUI();
-      setLocalStorage("filter", clickedFilter);
+      setLocalStorage(DataKeys.SELECTED_FILTER, clickedFilter);
     }
   });
 });
@@ -105,9 +142,9 @@ filters.forEach(function (filter) {
 function renderTodos() {
   todoContainer.innerHTML = "";
   let todosList = todosData.filter((todoData) =>
-    selectedFilter === "active"
+    selectedFilter === Filters.ACTIVE
       ? !todoData.completed
-      : selectedFilter === "completed"
+      : selectedFilter === Filters.COMPLETED
       ? todoData.completed
       : true
   );
@@ -116,8 +153,8 @@ function renderTodos() {
 
 function todoClickHandler(event, todo) {
   if (
-    event.target.classList.contains("delete-button") ||
-    event.target.classList.contains("delete-image")
+    event.target.classList.contains(ClassNames.deleteButton.BUTTON) ||
+    event.target.classList.contains(ClassNames.deleteButton.IMAGE)
   ) {
     todosData = todosData.filter((todoData) => todoData.id !== todo.id);
   } else {
@@ -128,7 +165,7 @@ function todoClickHandler(event, todo) {
   }
   updateItemsLeft();
   renderTodos();
-  setLocalStorage("todos", todosData);
+  setLocalStorage(DataKeys.TODOS, todosData);
 }
 
 todos.forEach((todo) =>
@@ -140,7 +177,7 @@ todos.forEach((todo) =>
 clearCompletedButton.addEventListener("click", (event) => {
   todosData = todosData.filter((todoData) => !todoData.completed);
   renderTodos();
-  setLocalStorage("todos", todosData);
+  setLocalStorage(DataKeys.TODOS, todosData);
 });
 
 function updateItemsLeft() {

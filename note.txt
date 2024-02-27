@@ -1,8 +1,18 @@
 vid 3 - localstorage
+  - explain json
+  - explain localstorage
+  - execute localstorage
+  - explain with real db, you'll have to consider errors and timing
 
 vid 4 - clean code
-  - enums -> filters (object)
-  - oop -> update localstorage, update data array
+  - ternary conditionals
+  - arrow functions
+  - naming standardization with objects
+    - Themes, Filters, DataKeys, ClassNames, Images
+  - OOP
+    - ...
+    - update localstorage
+    - update data array
   - show how things can be now be broken into files (the object declarations can be sep files)
   - explain / show webpack preprocessing
 
