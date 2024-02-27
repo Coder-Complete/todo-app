@@ -37,11 +37,7 @@ let selectedFilter = getLocalStorage("filter") || "all"; // 'all', 'active', 'co
 document.body.className = theme;
 
 modeIcon.addEventListener("click", function (event) {
-  if (theme === "light-theme") {
-    theme = "dark-theme";
-  } else {
-    theme = "light-theme";
-  }
+  theme === "light-theme" ? "dark-theme" : "light-theme";
   document.body.className = theme;
   setLocalStorage("theme", theme);
 });
@@ -108,19 +104,14 @@ filters.forEach(function (filter) {
 
 function renderTodos() {
   todoContainer.innerHTML = "";
-  if (selectedFilter === "active") {
-    let activeTodos = todosData.filter(function (todoData) {
-      return !todoData.completed;
-    });
-    displayTodos(activeTodos);
-  } else if (selectedFilter === "completed") {
-    let completedTodos = todosData.filter(function (todoData) {
-      return todoData.completed;
-    });
-    displayTodos(completedTodos);
-  } else {
-    displayTodos(todosData);
-  }
+  let todosList = todosData.filter(function (todoData) {
+    return selectedFilter === "active"
+      ? !todoData.completed
+      : selectedFilter === "completed"
+      ? todoData.completed
+      : true;
+  });
+  displayTodos(todosList);
 }
 
 function todoClickHandler(event, todo) {
