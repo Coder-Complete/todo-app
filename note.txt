@@ -9,6 +9,10 @@ vid 4 - clean code
   - arrow functions
   - naming standardization with objects
     - Themes, Filters, DataKeys, ClassNames, Images
+  - separate out more functions for readability
+    - todoTextNotEmpty
+    - addNewTodoData
+    - createTodo
   - OOP
     - ...
     - update localstorage

@@ -79,40 +79,53 @@ modeIcon.addEventListener("click", (event) => {
   setLocalStorage(DataKeys.SELECTED_THEME, theme);
 });
 
+function addNewTodoData(text) {
+  todosData.unshift({
+    id: generateUUID(),
+    text: text,
+    completed: false,
+  });
+  renderTodos();
+  updateItemsLeft();
+  setLocalStorage(DataKeys.TODOS, todosData);
+}
+
+function todoTextNotEmpty(text) {
+  return newTodoText.trim().length > 0;
+}
+
 createTodoForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const newTodoText = newTodoTextInput.value;
-  if (newTodoText.trim().length > 0) {
-    todosData.unshift({
-      id: generateUUID(),
-      text: newTodoText,
-      completed: false,
-    });
-    renderTodos();
-    updateItemsLeft();
-    setLocalStorage(DataKeys.TODOS, todosData);
+  if (todoTextNotEmpty(newTodoText)) {
+    addNewTodoData(newTodoText);
   }
   createTodoForm.reset();
 });
 
+function createTodo(todoData) {
+  let newTodo = document.createElement("div");
+  newTodo.id = todoData.id;
+  newTodo.classList.add(ClassNames.todo.BASE);
+  if (todoData.completed) {
+    newTodo.classList.add(ClassNames.todo.COMPLETED);
+  }
+  newTodo.innerHTML = `
+    <span class="${ClassNames.todo.CIRCLE}"></span>
+    <span class="${ClassNames.todo.TEXT}">${todoData.text}</span>
+    <span class="${ClassNames.deleteButton.BUTTON}">
+      <img class="${ClassNames.deleteButton.IMAGE}" src="${Images.cross.path}" alt="${Images.cross.altText}"/>
+    </span>
+  `;
+  newTodo.addEventListener("click", (event) =>
+    todoClickHandler(event, newTodo)
+  );
+  return newTodo;
+}
+
 function displayTodos(todosData) {
   todosData.forEach((todoData) => {
-    let newTodo = document.createElement("div");
-    newTodo.id = todoData.id;
-    newTodo.classList.add(ClassNames.todo.BASE);
-    if (todoData.completed) {
-      newTodo.classList.add(ClassNames.todo.COMPLETED);
-    }
-    newTodo.innerHTML = `
-      <span class="${ClassNames.todo.CIRCLE}"></span>
-      <span class="${ClassNames.todo.TEXT}">${todoData.text}</span>
-      <span class="${ClassNames.deleteButton.BUTTON}">
-        <img class="${ClassNames.deleteButton.IMAGE}" src="${Images.cross.path}" alt="${Images.cross.altText}"/>
-      </span>
-    `;
-    newTodo.addEventListener("click", (event) =>
-      todoClickHandler(event, newTodo)
-    );
+    let newTodo = createTodo(todoData);
     todoContainer.append(newTodo);
   });
 }
