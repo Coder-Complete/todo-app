@@ -14,7 +14,7 @@ vid 4 - clean code
     - addNewTodoData
     - createTodo
   - OOP
-    - ...
+    - first example - check if delete button clicked
     - update localstorage
     - update data array
   - show how things can be now be broken into files (the object declarations can be sep files)

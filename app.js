@@ -25,13 +25,22 @@ const DataKeys = {
   TODOS: "todos",
 };
 
+const DeleteButton = {
+  classNames: {
+    BUTTON: "delete-button",
+    IMAGE: "delete-image",
+  },
+  clicked(event) {
+    return (
+      event.target.classList.contains(this.classNames.BUTTON) ||
+      event.target.classList.contains(this.classNames.IMAGE)
+    );
+  },
+};
+
 const ClassNames = {
   filter: {
     SELECTED: "selected",
-  },
-  deleteButton: {
-    BUTTON: "delete-button",
-    IMAGE: "delete-image",
   },
   todo: {
     BASE: ["bar", "todo"],
@@ -165,10 +174,7 @@ function renderTodos() {
 }
 
 function todoClickHandler(event, todo) {
-  if (
-    event.target.classList.contains(ClassNames.deleteButton.BUTTON) ||
-    event.target.classList.contains(ClassNames.deleteButton.IMAGE)
-  ) {
+  if (DeleteButton.clicked(event)) {
     todosData = todosData.filter((todoData) => todoData.id !== todo.id);
   } else {
     const clickedTodoData = todosData.find(
