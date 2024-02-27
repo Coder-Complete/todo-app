@@ -16,52 +16,25 @@ function generateUUID() {
   return `${s4() + s4()}-${s4()}-${s4()}-${s4()}-${s4() + s4() + s4()}`;
 }
 
-let todosData = [
-  {
-    id: generateUUID(),
-    text: "Complete online javascript course",
-    completed: true,
-  },
-  {
-    id: generateUUID(),
-    text: "Jog around the park 3x",
-    completed: false,
-  },
-  {
-    id: generateUUID(),
-    text: "10 minutes meditation",
-    completed: false,
-  },
-  {
-    id: generateUUID(),
-    text: "Read for 1 hour",
-    completed: false,
-  },
-  {
-    id: generateUUID(),
-    text: "Pick up groceries",
-    completed: false,
-  },
-  {
-    id: generateUUID(),
-    text: "Complete Todo App on Frontend Mentor",
-    completed: false,
-  },
-];
-
-function getThemeFromDatabase() {
-  // contacts database asking for theme, and receives the theme
-  const receivedTheme = "light-theme";
-  return receivedTheme;
+function getLocalStorage(key) {
+  const data = localStorage.getItem(key);
+  try {
+    return JSON.parse(data);
+  } catch (e) {
+    console.error("Invalid JSON");
+    return data;
+  }
 }
 
-let currentTheme = getThemeFromDatabase();
-
-if (currentTheme === "light-theme") {
-  document.body.className = "light-theme";
-} else {
-  document.body.className = "dark-theme";
+function setLocalStorage(key, data) {
+  localStorage.setItem(key, JSON.stringify(data));
 }
+
+let todosData = getLocalStorage("todos") || [];
+let theme = getLocalStorage("theme") || "light-theme";
+let selectedFilter = getLocalStorage("filter") || "all"; // 'all', 'active', 'completed'
+
+document.body.className = theme;
 
 modeIcon.addEventListener("click", function (event) {
   if (theme === "light-theme") {
@@ -70,6 +43,7 @@ modeIcon.addEventListener("click", function (event) {
     theme = "light-theme";
   }
   document.body.className = theme;
+  setLocalStorage("theme", theme);
 });
 
 createTodoForm.addEventListener("submit", function (event) {
@@ -82,6 +56,8 @@ createTodoForm.addEventListener("submit", function (event) {
       completed: false,
     });
     renderTodos();
+    updateItemsLeft();
+    setLocalStorage("todos", todosData);
   }
   createTodoForm.reset();
 });
@@ -118,8 +94,6 @@ function updateFilterUI() {
   });
 }
 
-let selectedFilter = "all"; // 'all', 'active', 'completed'
-
 filters.forEach(function (filter) {
   filter.addEventListener("click", function (event) {
     let clickedFilter = event.target.innerText.toLowerCase();
@@ -127,6 +101,7 @@ filters.forEach(function (filter) {
       selectedFilter = clickedFilter;
       renderTodos();
       updateFilterUI();
+      setLocalStorage("filter", clickedFilter);
     }
   });
 });
@@ -164,6 +139,7 @@ function todoClickHandler(event, todo) {
   }
   updateItemsLeft();
   renderTodos();
+  setLocalStorage("todos", todosData);
 }
 
 todos.forEach(function (todo) {
@@ -177,6 +153,7 @@ clearCompletedButton.addEventListener("click", function (event) {
     return !todoData.completed;
   });
   renderTodos();
+  setLocalStorage("todos", todosData);
 });
 
 function updateItemsLeft() {
@@ -187,4 +164,5 @@ function updateItemsLeft() {
 }
 
 updateItemsLeft();
+updateFilterUI();
 renderTodos();
