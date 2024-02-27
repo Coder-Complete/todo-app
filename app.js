@@ -36,13 +36,13 @@ let selectedFilter = getLocalStorage("filter") || "all"; // 'all', 'active', 'co
 
 document.body.className = theme;
 
-modeIcon.addEventListener("click", function (event) {
+modeIcon.addEventListener("click", (event) => {
   theme === "light-theme" ? "dark-theme" : "light-theme";
   document.body.className = theme;
   setLocalStorage("theme", theme);
 });
 
-createTodoForm.addEventListener("submit", function (event) {
+createTodoForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const newTodoText = newTodoTextInput.value;
   if (newTodoText.trim().length > 0) {
@@ -59,7 +59,7 @@ createTodoForm.addEventListener("submit", function (event) {
 });
 
 function displayTodos(todosData) {
-  todosData.forEach(function (todoData) {
+  todosData.forEach((todoData) => {
     let newTodo = document.createElement("div");
     newTodo.id = todoData.id;
     newTodo.classList.add("bar", "todo");
@@ -73,15 +73,15 @@ function displayTodos(todosData) {
         <img class="delete-image" src="images/icon-cross.svg" alt=""/>
       </span>
     `;
-    newTodo.addEventListener("click", function (event) {
-      todoClickHandler(event, newTodo);
-    });
+    newTodo.addEventListener("click", (event) =>
+      todoClickHandler(event, newTodo)
+    );
     todoContainer.append(newTodo);
   });
 }
 
 function updateFilterUI() {
-  filters.forEach(function (filter) {
+  filters.forEach((filter) => {
     if (filter.innerText.toLowerCase() === selectedFilter) {
       filter.classList.add("selected");
     } else {
@@ -91,7 +91,7 @@ function updateFilterUI() {
 }
 
 filters.forEach(function (filter) {
-  filter.addEventListener("click", function (event) {
+  filter.addEventListener("click", (event) => {
     let clickedFilter = event.target.innerText.toLowerCase();
     if (clickedFilter !== selectedFilter) {
       selectedFilter = clickedFilter;
@@ -104,13 +104,13 @@ filters.forEach(function (filter) {
 
 function renderTodos() {
   todoContainer.innerHTML = "";
-  let todosList = todosData.filter(function (todoData) {
-    return selectedFilter === "active"
+  let todosList = todosData.filter((todoData) =>
+    selectedFilter === "active"
       ? !todoData.completed
       : selectedFilter === "completed"
       ? todoData.completed
-      : true;
-  });
+      : true
+  );
   displayTodos(todosList);
 }
 
@@ -119,13 +119,11 @@ function todoClickHandler(event, todo) {
     event.target.classList.contains("delete-button") ||
     event.target.classList.contains("delete-image")
   ) {
-    todosData = todosData.filter(function (todoData) {
-      return todoData.id !== todo.id;
-    });
+    todosData = todosData.filter((todoData) => todoData.id !== todo.id);
   } else {
-    const clickedTodoData = todosData.find(function (todoData) {
-      return todoData.id === todo.id;
-    });
+    const clickedTodoData = todosData.find(
+      (todoData) => todoData.id === todo.id
+    );
     clickedTodoData.completed = !clickedTodoData.completed;
   }
   updateItemsLeft();
@@ -133,24 +131,20 @@ function todoClickHandler(event, todo) {
   setLocalStorage("todos", todosData);
 }
 
-todos.forEach(function (todo) {
+todos.forEach((todo) =>
   todo.addEventListener("click", function (event) {
     todoClickHandler(event, todo);
-  });
-});
+  })
+);
 
-clearCompletedButton.addEventListener("click", function (event) {
-  todosData = todosData.filter(function (todoData) {
-    return !todoData.completed;
-  });
+clearCompletedButton.addEventListener("click", (event) => {
+  todosData = todosData.filter((todoData) => !todoData.completed);
   renderTodos();
   setLocalStorage("todos", todosData);
 });
 
 function updateItemsLeft() {
-  const itemsLeft = todosData.filter(function (todoData) {
-    return !todoData.completed;
-  }).length;
+  const itemsLeft = todosData.filter((todoData) => !todoData.completed).length;
   itemsLeftPlaceholder.innerText = itemsLeft;
 }
 
