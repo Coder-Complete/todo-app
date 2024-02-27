@@ -67,14 +67,14 @@ function setLocalStorage(key, data) {
   localStorage.setItem(key, JSON.stringify(data));
 }
 
-let todosData = getLocalStorage(DataKeys.todos) || [];
+let todosData = getLocalStorage(DataKeys.TODOS) || [];
 let theme = getLocalStorage(DataKeys.SELECTED_THEME) || Themes.LIGHT;
 let selectedFilter = getLocalStorage(DataKeys.SELECTED_FILTER) || Filters.ALL;
 
 document.body.className = theme;
 
 modeIcon.addEventListener("click", (event) => {
-  theme === Themes.LIGHT ? Themes.DARK : Themes.LIGHT;
+  theme = theme === Themes.LIGHT ? Themes.DARK : Themes.LIGHT;
   document.body.className = theme;
   setLocalStorage(DataKeys.SELECTED_THEME, theme);
 });
@@ -91,7 +91,7 @@ function addNewTodoData(text) {
 }
 
 function todoTextNotEmpty(text) {
-  return newTodoText.trim().length > 0;
+  return text.trim().length > 0;
 }
 
 createTodoForm.addEventListener("submit", (event) => {
@@ -106,7 +106,7 @@ createTodoForm.addEventListener("submit", (event) => {
 function createTodo(todoData) {
   let newTodo = document.createElement("div");
   newTodo.id = todoData.id;
-  newTodo.classList.add(ClassNames.todo.BASE);
+  newTodo.classList.add(...ClassNames.todo.BASE);
   if (todoData.completed) {
     newTodo.classList.add(ClassNames.todo.COMPLETED);
   }
