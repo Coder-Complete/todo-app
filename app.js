@@ -8,10 +8,31 @@ const clearCompletedButton = document.querySelector(".clear-completed-button");
 const itemsLeftPlaceholder = document.querySelector(".items-left");
 const filters = document.querySelectorAll(".filter");
 
-const Themes = {
+const Theme = {
   LIGHT: "light-theme",
   DARK: "dark-theme",
+  DATA_KEY: "theme",
+  current: getLocalStorage(this.DATA_KEY) || "light-theme",
+  toggle() {
+    this.current = this.current === this.LIGHT ? this.DARK : this.LIGHT;
+    setLocalStorage(this.DATA_KEY, this.current);
+    document.body.className = this.current;
+  },
+  apply() {
+    document.body.className = this.current;
+  },
 };
+
+let theme = Theme.current;
+
+Theme.apply();
+
+modeIcon.addEventListener("click", (event) => {
+  Theme.toggle();
+  // Theme.toggle()
+  // document.body.className = theme;
+  // setLocalStorage(DataKeys.SELECTED_THEME, theme);
+});
 
 const Filters = {
   ALL: "all",
@@ -21,7 +42,6 @@ const Filters = {
 
 const DataKeys = {
   SELECTED_FILTER: "filter",
-  SELECTED_THEME: "theme",
   TODOS: "todos",
 };
 
@@ -77,16 +97,7 @@ function setLocalStorage(key, data) {
 }
 
 let todosData = getLocalStorage(DataKeys.TODOS) || [];
-let theme = getLocalStorage(DataKeys.SELECTED_THEME) || Themes.LIGHT;
 let selectedFilter = getLocalStorage(DataKeys.SELECTED_FILTER) || Filters.ALL;
-
-document.body.className = theme;
-
-modeIcon.addEventListener("click", (event) => {
-  theme = theme === Themes.LIGHT ? Themes.DARK : Themes.LIGHT;
-  document.body.className = theme;
-  setLocalStorage(DataKeys.SELECTED_THEME, theme);
-});
 
 function addNewTodoData(text) {
   todosData.unshift({
