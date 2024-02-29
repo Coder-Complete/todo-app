@@ -8,30 +8,37 @@ const clearCompletedButton = document.querySelector(".clear-completed-button");
 const itemsLeftPlaceholder = document.querySelector(".items-left");
 const filters = document.querySelectorAll(".filter");
 
-const Theme = {
-  LIGHT: "light-theme",
-  DARK: "dark-theme",
-  DATA_KEY: "theme",
-  current: getLocalStorage(this.DATA_KEY) || "light-theme",
-  toggle() {
-    this.current = this.current === this.LIGHT ? this.DARK : this.LIGHT;
-    setLocalStorage(this.DATA_KEY, this.current);
-    document.body.className = this.current;
-  },
-  apply() {
-    document.body.className = this.current;
-  },
-};
+class ThemeManager {
+  static Themes = {
+    LIGHT: "light-theme",
+    DARK: "dark-theme",
+  };
+  static DATA_KEY = "theme";
 
-let theme = Theme.current;
+  constructor() {
+    this.current =
+      getLocalStorage(ThemeManager.DATA_KEY) || ThemeManager.Themes.LIGHT;
+  }
 
-Theme.apply();
+  apply = () => {
+    document.body.className = this.current;
+  };
+
+  toggle = () => {
+    this.current =
+      this.current === ThemeManager.Themes.LIGHT
+        ? ThemeManager.Themes.DARK
+        : ThemeManager.Themes.LIGHT;
+    setLocalStorage(ThemeManager.DATA_KEY, this.current);
+    this.apply();
+  };
+}
+
+let themeManager = new ThemeManager();
+themeManager.apply();
 
 modeIcon.addEventListener("click", (event) => {
-  Theme.toggle();
-  // Theme.toggle()
-  // document.body.className = theme;
-  // setLocalStorage(DataKeys.SELECTED_THEME, theme);
+  themeManager.toggle();
 });
 
 const Filters = {
@@ -133,8 +140,8 @@ function createTodo(todoData) {
   newTodo.innerHTML = `
     <span class="${ClassNames.todo.CIRCLE}"></span>
     <span class="${ClassNames.todo.TEXT}">${todoData.text}</span>
-    <span class="${ClassNames.deleteButton.BUTTON}">
-      <img class="${ClassNames.deleteButton.IMAGE}" src="${Images.cross.path}" alt="${Images.cross.altText}"/>
+    <span class="${DeleteButton.classNames.BUTTON}">
+      <img class="${DeleteButton.classNames.IMAGE}" src="${Images.cross.path}" alt="${Images.cross.altText}"/>
     </span>
   `;
   newTodo.addEventListener("click", (event) =>

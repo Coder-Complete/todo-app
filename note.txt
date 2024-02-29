@@ -17,9 +17,10 @@ vid 4 - clean code
     - first example - check if delete button clicked
     - start doing Themes
       - show that objects get ugly with "this" and need to "bind" methods to the object when using them in callbacks
-      - introduce classes
-        - 'this' automatically assumes class instance
-        - arrow fxn methods - don't need to bind in constructor
+      - show also that can't use Theme.whatever in the properties itself b/c not instantiated yet
+    - introduce classes
+      - 'this' automatically assumes class instance
+      - arrow fxn methods - don't need to bind in constructor
     - update localstorage
     - update data array
   - show how things can be now be broken into files (the object declarations can be sep files)
