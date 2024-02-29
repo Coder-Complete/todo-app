@@ -1,7 +1,8 @@
 import { filters } from "../utils/domNodes";
 import { getLocalStorage, setLocalStorage } from "./../utils/localStorage";
+import { todoManager } from "./todoManager";
 
-export default class FilterManager {
+export class FilterManager {
   static DATA_KEY = "filter";
   static Filters = {
     ALL: "all",
@@ -47,3 +48,5 @@ export default class FilterManager {
     });
   };
 }
+
+export const filterManager = new FilterManager();

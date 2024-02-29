@@ -1,6 +1,6 @@
 import { getLocalStorage, setLocalStorage } from "../utils/localStorage";
 
-export default class ThemeManager {
+class ThemeManager {
   static DATA_KEY = "theme";
   static Themes = {
     LIGHT: "light-theme",
@@ -25,3 +25,5 @@ export default class ThemeManager {
     this.apply();
   };
 }
+
+export const themeManager = new ThemeManager();

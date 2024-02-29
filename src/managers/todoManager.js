@@ -12,9 +12,9 @@ import { getLocalStorage, setLocalStorage } from "../utils/localStorage";
 import { generateUUID, textNotEmpty } from "../utils/helpers";
 import { deleteButton } from "../utils/uiHelpers";
 import { images } from "../utils/config";
-import FilterManager from "../managers/filterManager";
+import { filterManager, FilterManager } from "../managers/filterManager";
 
-export default class TodoManager {
+class TodoManager {
   static DATA_KEY = "todos";
   static ClassNames = {
     BASE: ["bar", "todo"],
@@ -151,3 +151,5 @@ function setupEventListeners() {
     todoManager.clearCompleted();
   });
 }
+
+export const todoManager = new TodoManager();
