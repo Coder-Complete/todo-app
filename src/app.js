@@ -1,12 +1,13 @@
-const modeIcon = document.querySelector(".mode-icon");
-const createTodoForm = document.querySelector("#create-todo-form");
-const newTodoTextInput = document.querySelector("#new-todo-input");
-const todoContainer = document.querySelector(".todo-container");
-const todos = document.querySelectorAll(".todo");
-const deleteButtons = document.querySelectorAll(".delete-button");
-const clearCompletedButton = document.querySelector(".clear-completed-button");
-const itemsLeftPlaceholder = document.querySelector(".items-left");
-const filters = document.querySelectorAll(".filter");
+import {
+  clearCompletedButton,
+  createTodoForm,
+  filters,
+  itemsLeftPlaceholder,
+  modeIcon,
+  newTodoTextInput,
+  todoContainer,
+  todos,
+} from "./utils/domNodes";
 
 function generateUUID() {
   const s4 = () =>
@@ -48,7 +49,7 @@ const deleteButton = {
 };
 
 const images = {
-  cross: { path: "images/icon-cross.svg", altText: "" },
+  cross: { path: "./images/icon-cross.svg", altText: "" },
 };
 class ThemeManager {
   static DATA_KEY = "theme";

@@ -18,8 +18,8 @@
   --completed-text-color: #cbcbcb;
   --box-shadow-color: #e4e4e4;
   --border-color: #e4e4e4;
-  --header-image: url("images/bg-desktop-light.jpg");
-  --mode-icon: url("images/icon-moon.svg");
+  --header-image: url("./images/bg-desktop-light.jpg");
+  --mode-icon: url("./images/icon-moon.svg");
 }
 
 .dark-theme {
