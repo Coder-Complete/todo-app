@@ -8,12 +8,41 @@ const clearCompletedButton = document.querySelector(".clear-completed-button");
 const itemsLeftPlaceholder = document.querySelector(".items-left");
 const filters = document.querySelectorAll(".filter");
 
+const DataKeys = {
+  TODOS: "todos",
+};
+
+const ClassNames = {
+  todo: {
+    BASE: ["bar", "todo"],
+    COMPLETED: "completed",
+    TEXT: "todo-text",
+    CIRCLE: "circle",
+  },
+};
+
+const DeleteButton = {
+  classNames: {
+    BUTTON: "delete-button",
+    IMAGE: "delete-image",
+  },
+  clicked(event) {
+    return (
+      event.target.classList.contains(this.classNames.BUTTON) ||
+      event.target.classList.contains(this.classNames.IMAGE)
+    );
+  },
+};
+
+const Images = {
+  cross: { path: "images/icon-cross.svg", altText: "" },
+};
 class ThemeManager {
+  static DATA_KEY = "theme";
   static Themes = {
     LIGHT: "light-theme",
     DARK: "dark-theme",
   };
-  static DATA_KEY = "theme";
 
   constructor() {
     this.current =
@@ -34,52 +63,71 @@ class ThemeManager {
   };
 }
 
-let themeManager = new ThemeManager();
-themeManager.apply();
-
 modeIcon.addEventListener("click", (event) => {
   themeManager.toggle();
 });
 
-const Filters = {
-  ALL: "all",
-  ACTIVE: "active",
-  COMPLETED: "completed",
-};
-
-const DataKeys = {
-  SELECTED_FILTER: "filter",
-  TODOS: "todos",
-};
-
-const DeleteButton = {
-  classNames: {
-    BUTTON: "delete-button",
-    IMAGE: "delete-image",
-  },
-  clicked(event) {
-    return (
-      event.target.classList.contains(this.classNames.BUTTON) ||
-      event.target.classList.contains(this.classNames.IMAGE)
-    );
-  },
-};
-
-const ClassNames = {
-  filter: {
-    SELECTED: "selected",
-  },
-  todo: {
-    BASE: ["bar", "todo"],
+class FilterManager {
+  static DATA_KEY = "filter";
+  static Filters = {
+    ALL: "all",
+    ACTIVE: "active",
     COMPLETED: "completed",
-    TEXT: "todo-text",
-    CIRCLE: "circle",
-  },
-};
+  };
+  static ClassNames = {
+    SELECTED: "selected",
+  };
 
-const Images = {
-  cross: { path: "images/icon-cross.svg", altText: "" },
-};
+  constructor() {
+    this.current = getLocalStorage("filter") || FilterManager.ALL;
+  }
+
+  apply = () => {
+    setLocalStorage(FilterManager.DATA_KEY, this.current);
+    this.updateUI();
+    renderTodos();
+  };
+
+  getFilterNameFromDomNode = (node) => {
+    return node.innerText.toLowerCase();
+  };
+
+  switch = (event) => {
+    let clickedFilter = this.getFilterNameFromDomNode(event.target);
+    if (clickedFilter !== this.current) {
+      this.current = clickedFilter;
+      this.apply();
+    }
+  };
+
+  updateUI = () => {
+    filters.forEach((filter) => {
+      if (this.getFilterNameFromDomNode(filter) === this.current) {
+        filter.classList.add(FilterManager.ClassNames.SELECTED);
+      } else {
+        filter.classList.remove(FilterManager.ClassNames.SELECTED);
+      }
+    });
+  };
+}
+
+filters.forEach(function (filter) {
+  filter.addEventListener("click", (event) => {
+    filterManager.switch(event);
+  });
+});
+
+function renderTodos() {
+  todoContainer.innerHTML = "";
+  let todosList = todosData.filter((todoData) =>
+    filterManager.current === FilterManager.Filters.ACTIVE
+      ? !todoData.completed
+      : filterManager.current === FilterManager.Filters.COMPLETED
+      ? todoData.completed
+      : true
+  );
+  displayTodos(todosList);
+}
 
 function generateUUID() {
   const s4 = () =>
@@ -102,9 +150,6 @@ function getLocalStorage(key) {
 function setLocalStorage(key, data) {
   localStorage.setItem(key, JSON.stringify(data));
 }
-
-let todosData = getLocalStorage(DataKeys.TODOS) || [];
-let selectedFilter = getLocalStorage(DataKeys.SELECTED_FILTER) || Filters.ALL;
 
 function addNewTodoData(text) {
   todosData.unshift({
@@ -157,40 +202,6 @@ function displayTodos(todosData) {
   });
 }
 
-function updateFilterUI() {
-  filters.forEach((filter) => {
-    if (filter.innerText.toLowerCase() === selectedFilter) {
-      filter.classList.add(ClassNames.filter.SELECTED);
-    } else {
-      filter.classList.remove(ClassNames.filter.SELECTED);
-    }
-  });
-}
-
-filters.forEach(function (filter) {
-  filter.addEventListener("click", (event) => {
-    let clickedFilter = event.target.innerText.toLowerCase();
-    if (clickedFilter !== selectedFilter) {
-      selectedFilter = clickedFilter;
-      renderTodos();
-      updateFilterUI();
-      setLocalStorage(DataKeys.SELECTED_FILTER, clickedFilter);
-    }
-  });
-});
-
-function renderTodos() {
-  todoContainer.innerHTML = "";
-  let todosList = todosData.filter((todoData) =>
-    selectedFilter === Filters.ACTIVE
-      ? !todoData.completed
-      : selectedFilter === Filters.COMPLETED
-      ? todoData.completed
-      : true
-  );
-  displayTodos(todosList);
-}
-
 function todoClickHandler(event, todo) {
   if (DeleteButton.clicked(event)) {
     todosData = todosData.filter((todoData) => todoData.id !== todo.id);
@@ -222,6 +233,10 @@ function updateItemsLeft() {
   itemsLeftPlaceholder.innerText = itemsLeft;
 }
 
+let todosData = getLocalStorage(DataKeys.TODOS) || [];
+let themeManager = new ThemeManager();
+themeManager.apply();
+let filterManager = new FilterManager();
+filterManager.apply();
 updateItemsLeft();
-updateFilterUI();
-renderTodos();
+// renderTodos();
