@@ -1,5 +1,5 @@
-// Utility functions related to UI interactions
 export const deleteButton = {
+  image: { path: "./images/icon-cross.svg", altText: "" },
   classNames: {
     BUTTON: "delete-button",
     IMAGE: "delete-image",

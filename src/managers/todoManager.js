@@ -8,8 +8,7 @@ import {
 } from "../utils/domNodes";
 import { getLocalStorage, setLocalStorage } from "../utils/localStorage";
 import { generateUUID, textNotEmpty } from "../utils/helpers";
-import { deleteButton } from "../utils/uiHelpers";
-import { images } from "../utils/config";
+import { deleteButton } from "../utils/deleteButton";
 import { filterManager, FilterManager } from "../managers/filterManager";
 
 class TodoManager {
@@ -64,7 +63,7 @@ class TodoManager {
       <span class="${TodoManager.ClassNames.CIRCLE}"></span>
       <span class="${TodoManager.ClassNames.TEXT}">${todoData.text}</span>
       <span class="${deleteButton.classNames.BUTTON}">
-        <img class="${deleteButton.classNames.IMAGE}" src="${images.cross.path}" alt="${images.cross.altText}"/>
+        <img class="${deleteButton.classNames.IMAGE}" src="${deleteButton.image.path}" alt="${deleteButton.image.altText}"/>
       </span>
     `;
     newTodo.addEventListener("click", (event) => this.click(event, newTodo));
