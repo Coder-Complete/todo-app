@@ -76,10 +76,6 @@ class ThemeManager {
   };
 }
 
-modeIcon.addEventListener("click", (event) => {
-  themeManager.toggle();
-});
-
 class FilterManager {
   static DATA_KEY = "filter";
   static Filters = {
@@ -126,15 +122,6 @@ class FilterManager {
     });
   };
 }
-
-filters.forEach(function (filter) {
-  filter.addEventListener("click", (event) => {
-    const clickedFilterName = filterManager.getFilterNameFromDomNode(
-      event.target
-    );
-    filterManager.switch(clickedFilterName);
-  });
-});
 
 class TodoManager {
   static DATA_KEY = "todos";
@@ -240,24 +227,39 @@ class TodoManager {
   };
 }
 
-createTodoForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const newTodoText = newTodoTextInput.value;
-  if (textNotEmpty(newTodoText)) {
-    todoManager.add(newTodoText);
-  }
-  createTodoForm.reset();
-});
+function setupEventListeners() {
+  modeIcon.addEventListener("click", (event) => {
+    themeManager.toggle();
+  });
 
-todos.forEach((todo) =>
-  todo.addEventListener("click", function (event) {
-    todoManager.click(event, todo);
-  })
-);
+  filters.forEach(function (filter) {
+    filter.addEventListener("click", (event) => {
+      const clickedFilterName = filterManager.getFilterNameFromDomNode(
+        event.target
+      );
+      filterManager.switch(clickedFilterName);
+    });
+  });
 
-clearCompletedButton.addEventListener("click", (event) => {
-  todoManager.clearCompleted();
-});
+  createTodoForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const newTodoText = newTodoTextInput.value;
+    if (textNotEmpty(newTodoText)) {
+      todoManager.add(newTodoText);
+    }
+    createTodoForm.reset();
+  });
+
+  todos.forEach((todo) =>
+    todo.addEventListener("click", function (event) {
+      todoManager.click(event, todo);
+    })
+  );
+
+  clearCompletedButton.addEventListener("click", (event) => {
+    todoManager.clearCompleted();
+  });
+}
 
 let themeManager = new ThemeManager();
 let filterManager = new FilterManager();
@@ -266,3 +268,5 @@ let todoManager = new TodoManager();
 themeManager.apply();
 filterManager.initialApply();
 todoManager.initialApply();
+
+setupEventListeners();
