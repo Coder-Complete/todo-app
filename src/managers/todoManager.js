@@ -1,9 +1,7 @@
 import {
   clearCompletedButton,
   createTodoForm,
-  filters,
   itemsLeftPlaceholder,
-  modeIcon,
   newTodoTextInput,
   todoContainer,
   todos,
@@ -106,6 +104,27 @@ class TodoManager {
     });
   };
 
+  setupEventListeners = () => {
+    createTodoForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const newTodoText = newTodoTextInput.value;
+      if (textNotEmpty(newTodoText)) {
+        this.add(newTodoText);
+      }
+      createTodoForm.reset();
+    });
+
+    todos.forEach((todo) =>
+      todo.addEventListener("click", function (event) {
+        this.click(event, todo);
+      })
+    );
+
+    clearCompletedButton.addEventListener("click", (event) => {
+      this.clearCompleted();
+    });
+  };
+
   toggleTodoByID = (todoID) => {
     const clickedTodoData = this.findTodoByID(todoID);
     clickedTodoData.completed = !clickedTodoData.completed;
@@ -116,40 +135,6 @@ class TodoManager {
     const itemsLeft = this.getActiveTodos().length;
     itemsLeftPlaceholder.innerText = itemsLeft;
   };
-}
-
-function setupEventListeners() {
-  modeIcon.addEventListener("click", (event) => {
-    themeManager.toggle();
-  });
-
-  filters.forEach(function (filter) {
-    filter.addEventListener("click", (event) => {
-      const clickedFilterName = filterManager.getFilterNameFromDomNode(
-        event.target
-      );
-      filterManager.switch(clickedFilterName);
-    });
-  });
-
-  createTodoForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const newTodoText = newTodoTextInput.value;
-    if (textNotEmpty(newTodoText)) {
-      todoManager.add(newTodoText);
-    }
-    createTodoForm.reset();
-  });
-
-  todos.forEach((todo) =>
-    todo.addEventListener("click", function (event) {
-      todoManager.click(event, todo);
-    })
-  );
-
-  clearCompletedButton.addEventListener("click", (event) => {
-    todoManager.clearCompleted();
-  });
 }
 
 export const todoManager = new TodoManager();

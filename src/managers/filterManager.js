@@ -23,12 +23,19 @@ export class FilterManager {
     todoManager.renderTodos();
   };
 
-  getFilterNameFromDomNode = (node) => {
-    return node.innerText.toLowerCase();
-  };
+  getFilterNameFromDomNode = (node) => node.innerText.toLowerCase();
 
   initialApply = () => {
     this.updateFilterUI();
+  };
+
+  setupEventListeners = () => {
+    filters.forEach((filter) => {
+      filter.addEventListener("click", (event) => {
+        const clickedFilterName = this.getFilterNameFromDomNode(event.target);
+        this.switch(clickedFilterName);
+      });
+    });
   };
 
   switch = (clickedFilterName) => {

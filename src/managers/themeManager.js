@@ -1,5 +1,5 @@
+import { modeIcon } from "../utils/domNodes";
 import { getLocalStorage, setLocalStorage } from "../utils/localStorage";
-
 class ThemeManager {
   static DATA_KEY = "theme";
   static Themes = {
@@ -14,6 +14,12 @@ class ThemeManager {
 
   apply = () => {
     document.body.className = this.current;
+  };
+
+  setupEventListeners = () => {
+    modeIcon.addEventListener("click", (event) => {
+      this.toggle();
+    });
   };
 
   toggle = () => {

@@ -24,7 +24,16 @@ vid 4 - clean code
     - update localstorage
     - update data array
   - show how things can be now be broken into files (the object declarations can be sep files)
-  - explain / show webpack preprocessing
+    - webpack, webpack-cli, webpack-dev-server
+    - html webpack plugin - handles source in html file for dev/prod and copies html file into dist
+    - copy webpack plugin - copy files into dist
+      - do i need this for images? (obvi i do for img processing) - test without this and image processing
+        [[[ 
+          test: /\.(png|svg|jpg|jpeg|gif)$/i,
+          type: "asset/resource",
+        ]]]
+    - babel-loader - bundle files (import export)
+    - image-webpack-loader - process images - lossless compression
 
 things to do with js
 - x - light/dark mode
