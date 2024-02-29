@@ -1,6 +1,5 @@
 import { filters } from "../utils/domNodes";
 import { getLocalStorage, setLocalStorage } from "./../utils/localStorage";
-import { todoManager } from "./todoManager";
 
 export class FilterManager {
   static DATA_KEY = "filter";
@@ -15,18 +14,23 @@ export class FilterManager {
 
   constructor() {
     this.current = getLocalStorage("filter") || FilterManager.Filters.ALL;
+    this.renderTodos = () => {}; // will be replaced by todoManager's renderTodos method in its constructor
   }
 
   apply = () => {
     setLocalStorage(FilterManager.DATA_KEY, this.current);
     this.updateFilterUI();
-    todoManager.renderTodos();
+    this.renderTodos();
   };
 
   getFilterNameFromDomNode = (node) => node.innerText.toLowerCase();
 
   initialApply = () => {
     this.updateFilterUI();
+  };
+
+  setRenderTodos = (renderTodosFromTodoManager) => {
+    this.renderTodos = renderTodosFromTodoManager;
   };
 
   setupEventListeners = () => {

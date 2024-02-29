@@ -20,8 +20,10 @@ class TodoManager {
     CIRCLE: "circle",
   };
 
-  constructor() {
+  constructor(filterManager) {
     this.data = getLocalStorage(TodoManager.DATA_KEY) || [];
+    this.filterManager = filterManager;
+    this.filterManager.setRenderTodos(this.renderTodos);
   }
 
   add = (text) => {
@@ -136,4 +138,4 @@ class TodoManager {
   };
 }
 
-export const todoManager = new TodoManager();
+export const todoManager = new TodoManager(filterManager);
