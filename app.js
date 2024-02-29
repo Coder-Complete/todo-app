@@ -8,20 +8,33 @@ const clearCompletedButton = document.querySelector(".clear-completed-button");
 const itemsLeftPlaceholder = document.querySelector(".items-left");
 const filters = document.querySelectorAll(".filter");
 
-const DataKeys = {
-  TODOS: "todos",
-};
+function generateUUID() {
+  const s4 = () =>
+    Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  return `${s4() + s4()}-${s4()}-${s4()}-${s4()}-${s4() + s4() + s4()}`;
+}
 
-const ClassNames = {
-  todo: {
-    BASE: ["bar", "todo"],
-    COMPLETED: "completed",
-    TEXT: "todo-text",
-    CIRCLE: "circle",
-  },
-};
+function textNotEmpty(text) {
+  return text.trim().length > 0;
+}
 
-const DeleteButton = {
+function getLocalStorage(key) {
+  const data = localStorage.getItem(key);
+  try {
+    return JSON.parse(data);
+  } catch (e) {
+    console.error("Invalid JSON");
+    return data;
+  }
+}
+
+function setLocalStorage(key, data) {
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+const deleteButton = {
   classNames: {
     BUTTON: "delete-button",
     IMAGE: "delete-image",
@@ -34,7 +47,7 @@ const DeleteButton = {
   },
 };
 
-const Images = {
+const images = {
   cross: { path: "images/icon-cross.svg", altText: "" },
 };
 class ThemeManager {
@@ -84,23 +97,26 @@ class FilterManager {
 
   apply = () => {
     setLocalStorage(FilterManager.DATA_KEY, this.current);
-    this.updateUI();
-    renderTodos();
+    this.updateFilterUI();
+    todoManager.renderTodos();
   };
 
   getFilterNameFromDomNode = (node) => {
     return node.innerText.toLowerCase();
   };
 
-  switch = (event) => {
-    let clickedFilter = this.getFilterNameFromDomNode(event.target);
-    if (clickedFilter !== this.current) {
-      this.current = clickedFilter;
+  initialApply = () => {
+    this.updateFilterUI();
+  };
+
+  switch = (clickedFilterName) => {
+    if (clickedFilterName !== this.current) {
+      this.current = clickedFilterName;
       this.apply();
     }
   };
 
-  updateUI = () => {
+  updateFilterUI = () => {
     filters.forEach((filter) => {
       if (this.getFilterNameFromDomNode(filter) === this.current) {
         filter.classList.add(FilterManager.ClassNames.SELECTED);
@@ -113,130 +129,140 @@ class FilterManager {
 
 filters.forEach(function (filter) {
   filter.addEventListener("click", (event) => {
-    filterManager.switch(event);
+    const clickedFilterName = filterManager.getFilterNameFromDomNode(
+      event.target
+    );
+    filterManager.switch(clickedFilterName);
   });
 });
 
-function renderTodos() {
-  todoContainer.innerHTML = "";
-  let todosList = todosData.filter((todoData) =>
-    filterManager.current === FilterManager.Filters.ACTIVE
-      ? !todoData.completed
-      : filterManager.current === FilterManager.Filters.COMPLETED
-      ? todoData.completed
-      : true
-  );
-  displayTodos(todosList);
-}
+class TodoManager {
+  static DATA_KEY = "todos";
+  static ClassNames = {
+    BASE: ["bar", "todo"],
+    COMPLETED: "completed",
+    TEXT: "todo-text",
+    CIRCLE: "circle",
+  };
 
-function generateUUID() {
-  const s4 = () =>
-    Math.floor((1 + Math.random()) * 0x10000)
-      .toString(16)
-      .substring(1);
-  return `${s4() + s4()}-${s4()}-${s4()}-${s4()}-${s4() + s4() + s4()}`;
-}
-
-function getLocalStorage(key) {
-  const data = localStorage.getItem(key);
-  try {
-    return JSON.parse(data);
-  } catch (e) {
-    console.error("Invalid JSON");
-    return data;
+  constructor() {
+    this.data = getLocalStorage(TodoManager.DATA_KEY) || [];
   }
-}
 
-function setLocalStorage(key, data) {
-  localStorage.setItem(key, JSON.stringify(data));
-}
+  add = (text) => {
+    this.data.unshift({
+      id: generateUUID(),
+      text: text,
+      completed: false,
+    });
+    this.apply();
+  };
 
-function addNewTodoData(text) {
-  todosData.unshift({
-    id: generateUUID(),
-    text: text,
-    completed: false,
-  });
-  renderTodos();
-  updateItemsLeft();
-  setLocalStorage(DataKeys.TODOS, todosData);
-}
+  apply = () => {
+    setLocalStorage(TodoManager.DATA_KEY, this.data);
+    this.updateItemsLeft();
+    this.renderTodos();
+  };
 
-function todoTextNotEmpty(text) {
-  return text.trim().length > 0;
+  clearCompleted = () => {
+    this.data = this.getActiveTodos();
+    this.apply();
+  };
+
+  click = (event, todo) => {
+    if (deleteButton.clicked(event)) {
+      this.removeTodoByID(todo.id);
+    } else {
+      this.toggleTodoByID(todo.id);
+    }
+  };
+
+  createTodo = (todoData) => {
+    let newTodo = document.createElement("div");
+    newTodo.id = todoData.id;
+    newTodo.classList.add(...TodoManager.ClassNames.BASE);
+    if (todoData.completed) {
+      newTodo.classList.add(TodoManager.ClassNames.COMPLETED);
+    }
+    newTodo.innerHTML = `
+      <span class="${TodoManager.ClassNames.CIRCLE}"></span>
+      <span class="${TodoManager.ClassNames.TEXT}">${todoData.text}</span>
+      <span class="${deleteButton.classNames.BUTTON}">
+        <img class="${deleteButton.classNames.IMAGE}" src="${images.cross.path}" alt="${images.cross.altText}"/>
+      </span>
+    `;
+    newTodo.addEventListener("click", (event) => this.click(event, newTodo));
+    return newTodo;
+  };
+
+  findTodoByID = (todoID) =>
+    this.data.find((todoData) => todoData.id === todoID);
+
+  getActiveTodos = () => this.data.filter((item) => !item.completed);
+
+  getCompletedTodos = () => this.data.filter((item) => item.completed);
+
+  getTodoListBasedOnFilter = () =>
+    filterManager.current === FilterManager.Filters.ACTIVE
+      ? this.getActiveTodos()
+      : filterManager.current === FilterManager.Filters.COMPLETED
+      ? this.getCompletedTodos()
+      : this.data;
+
+  initialApply = () => {
+    this.updateItemsLeft();
+    this.renderTodos();
+  };
+
+  removeTodoByID = (todoID) => {
+    this.data = this.data.filter((todoData) => todoData.id !== todoID);
+    this.apply();
+  };
+
+  renderTodos = () => {
+    todoContainer.innerHTML = "";
+    let todosList = this.getTodoListBasedOnFilter();
+    todosList.forEach((todoData) => {
+      let newTodo = this.createTodo(todoData);
+      todoContainer.append(newTodo);
+    });
+  };
+
+  toggleTodoByID = (todoID) => {
+    const clickedTodoData = this.findTodoByID(todoID);
+    clickedTodoData.completed = !clickedTodoData.completed;
+    this.apply();
+  };
+
+  updateItemsLeft = () => {
+    const itemsLeft = this.getActiveTodos().length;
+    itemsLeftPlaceholder.innerText = itemsLeft;
+  };
 }
 
 createTodoForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const newTodoText = newTodoTextInput.value;
-  if (todoTextNotEmpty(newTodoText)) {
-    addNewTodoData(newTodoText);
+  if (textNotEmpty(newTodoText)) {
+    todoManager.add(newTodoText);
   }
   createTodoForm.reset();
 });
 
-function createTodo(todoData) {
-  let newTodo = document.createElement("div");
-  newTodo.id = todoData.id;
-  newTodo.classList.add(...ClassNames.todo.BASE);
-  if (todoData.completed) {
-    newTodo.classList.add(ClassNames.todo.COMPLETED);
-  }
-  newTodo.innerHTML = `
-    <span class="${ClassNames.todo.CIRCLE}"></span>
-    <span class="${ClassNames.todo.TEXT}">${todoData.text}</span>
-    <span class="${DeleteButton.classNames.BUTTON}">
-      <img class="${DeleteButton.classNames.IMAGE}" src="${Images.cross.path}" alt="${Images.cross.altText}"/>
-    </span>
-  `;
-  newTodo.addEventListener("click", (event) =>
-    todoClickHandler(event, newTodo)
-  );
-  return newTodo;
-}
-
-function displayTodos(todosData) {
-  todosData.forEach((todoData) => {
-    let newTodo = createTodo(todoData);
-    todoContainer.append(newTodo);
-  });
-}
-
-function todoClickHandler(event, todo) {
-  if (DeleteButton.clicked(event)) {
-    todosData = todosData.filter((todoData) => todoData.id !== todo.id);
-  } else {
-    const clickedTodoData = todosData.find(
-      (todoData) => todoData.id === todo.id
-    );
-    clickedTodoData.completed = !clickedTodoData.completed;
-  }
-  updateItemsLeft();
-  renderTodos();
-  setLocalStorage(DataKeys.TODOS, todosData);
-}
-
 todos.forEach((todo) =>
   todo.addEventListener("click", function (event) {
-    todoClickHandler(event, todo);
+    todoManager.click(event, todo);
   })
 );
 
 clearCompletedButton.addEventListener("click", (event) => {
-  todosData = todosData.filter((todoData) => !todoData.completed);
-  renderTodos();
-  setLocalStorage(DataKeys.TODOS, todosData);
+  todoManager.clearCompleted();
 });
 
-function updateItemsLeft() {
-  const itemsLeft = todosData.filter((todoData) => !todoData.completed).length;
-  itemsLeftPlaceholder.innerText = itemsLeft;
-}
-
-let todosData = getLocalStorage(DataKeys.TODOS) || [];
 let themeManager = new ThemeManager();
-themeManager.apply();
 let filterManager = new FilterManager();
-filterManager.apply();
-updateItemsLeft();
-// renderTodos();
+let todoManager = new TodoManager();
+
+themeManager.apply();
+filterManager.initialApply();
+todoManager.initialApply();
