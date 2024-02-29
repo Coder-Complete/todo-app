@@ -88,7 +88,7 @@ class FilterManager {
   };
 
   constructor() {
-    this.current = getLocalStorage("filter") || FilterManager.ALL;
+    this.current = getLocalStorage("filter") || FilterManager.Filters.ALL;
   }
 
   apply = () => {
