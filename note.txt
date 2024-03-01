@@ -5,14 +5,14 @@ vid 3 - localstorage
   - explain with real db, you'll have to consider errors and timing
 
 vid 4 - clean code
-  - ternary conditionals
-  - arrow functions
+  - x - ternary conditionals
+  - x - arrow functions
+  - x - separate out more functions for readability
+    - x - todoTextNotEmpty
+    - x - addNewTodoData
+    - x - createTodo
   - naming standardization with objects
     - Themes, Filters, DataKeys, ClassNames, Images
-  - separate out more functions for readability
-    - todoTextNotEmpty
-    - addNewTodoData
-    - createTodo
   - OOP
     - first example - check if delete button clicked
     - start doing Themes

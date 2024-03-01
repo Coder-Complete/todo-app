@@ -20,37 +20,37 @@ let todosData = JSON.parse(localStorage.getItem("todos")) || [];
 
 function getThemeFromDatabase() {
   // contacts database asking for theme, and receives the theme
-  const receivedTheme = localStorage.getItem("theme") || "light-theme";
-  return receivedTheme;
+  return localStorage.getItem("theme") || "light-theme";
 }
 
 let currentTheme = getThemeFromDatabase();
 
-if (currentTheme === "light-theme") {
-  document.body.className = "light-theme";
-} else {
-  document.body.className = "dark-theme";
-}
+document.body.className =
+  currentTheme === "light-theme" ? "light-theme" : "dark-theme";
 
-modeIcon.addEventListener("click", function (event) {
-  if (currentTheme === "light-theme") {
-    currentTheme = "dark-theme";
-  } else {
-    currentTheme = "light-theme";
-  }
+modeIcon.addEventListener("click", (event) => {
+  currentTheme = currentTheme === "light-theme" ? "dark-theme" : "light-theme";
   document.body.className = currentTheme;
   localStorage.setItem("theme", currentTheme);
 });
 
-createTodoForm.addEventListener("submit", function (event) {
+function textNotEmpty(text) {
+  return text.trim().length > 0;
+}
+
+function addTodo(text) {
+  todosData.unshift({
+    id: generateUUID(),
+    text,
+    completed: false,
+  });
+}
+
+createTodoForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const newTodoText = newTodoTextInput.value;
-  if (newTodoText.trim().length > 0) {
-    todosData.unshift({
-      id: generateUUID(),
-      text: newTodoText,
-      completed: false,
-    });
+  if (textNotEmpty(newTodoText)) {
+    addTodo(newTodoText);
     renderTodos();
     updateItemsLeft();
     localStorage.setItem("todos", JSON.stringify(todosData));
@@ -58,30 +58,33 @@ createTodoForm.addEventListener("submit", function (event) {
   createTodoForm.reset();
 });
 
+function createTodo(todoData) {
+  let todo = document.createElement("div");
+  todo.id = todoData.id;
+  todo.classList.add("bar", "todo");
+  if (todoData.completed) {
+    todo.classList.add("completed");
+  }
+  todo.innerHTML = `
+    <span class="circle"></span>
+    <span class="todo-text">${todoData.text}</span>
+    <span class="delete-button">
+      <img class="delete-image" src="images/icon-cross.svg" alt=""/>
+    </span>
+  `;
+  todo.addEventListener("click", (event) => todoClickHandler(event, todo));
+  return todo;
+}
+
 function displayTodos(todosData) {
-  todosData.forEach(function (todoData) {
-    let newTodo = document.createElement("div");
-    newTodo.id = todoData.id;
-    newTodo.classList.add("bar", "todo");
-    if (todoData.completed) {
-      newTodo.classList.add("completed");
-    }
-    newTodo.innerHTML = `
-      <span class="circle"></span>
-      <span class="todo-text">${todoData.text}</span>
-      <span class="delete-button">
-        <img class="delete-image" src="images/icon-cross.svg" alt=""/>
-      </span>
-    `;
-    newTodo.addEventListener("click", function (event) {
-      todoClickHandler(event, newTodo);
-    });
+  todosData.forEach((todoData) => {
+    let newTodo = createTodo(todoData);
     todoContainer.append(newTodo);
   });
 }
 
 function updateFilterUI() {
-  filters.forEach(function (filter) {
+  filters.forEach((filter) => {
     if (filter.innerText.toLowerCase() === selectedFilter) {
       filter.classList.add("selected");
     } else {
@@ -91,10 +94,9 @@ function updateFilterUI() {
 }
 
 let selectedFilter = localStorage.getItem("filter") || "all"; // 'all', 'active', 'completed'
-console.log(selectedFilter);
 
 filters.forEach(function (filter) {
-  filter.addEventListener("click", function (event) {
+  filter.addEventListener("click", (event) => {
     let clickedFilter = event.target.innerText.toLowerCase();
     if (clickedFilter !== selectedFilter) {
       selectedFilter = clickedFilter;
@@ -105,21 +107,18 @@ filters.forEach(function (filter) {
   });
 });
 
+function determineTodosToDisplayBasedOnFilter(filter) {
+  return filter === "active"
+    ? todosData.filter((todoData) => !todoData.completed)
+    : filter === "completed"
+    ? todosData.filter((todoData) => todoData.completed)
+    : todosData;
+}
+
 function renderTodos() {
   todoContainer.innerHTML = "";
-  if (selectedFilter === "active") {
-    let activeTodos = todosData.filter(function (todoData) {
-      return !todoData.completed;
-    });
-    displayTodos(activeTodos);
-  } else if (selectedFilter === "completed") {
-    let completedTodos = todosData.filter(function (todoData) {
-      return todoData.completed;
-    });
-    displayTodos(completedTodos);
-  } else {
-    displayTodos(todosData);
-  }
+  let todosToDisplay = determineTodosToDisplayBasedOnFilter(selectedFilter);
+  displayTodos(todosToDisplay);
 }
 
 function todoClickHandler(event, todo) {
@@ -127,13 +126,11 @@ function todoClickHandler(event, todo) {
     event.target.classList.contains("delete-button") ||
     event.target.classList.contains("delete-image")
   ) {
-    todosData = todosData.filter(function (todoData) {
-      return todoData.id !== todo.id;
-    });
+    todosData = todosData.filter((todoData) => todoData.id !== todo.id);
   } else {
-    const clickedTodoData = todosData.find(function (todoData) {
-      return todoData.id === todo.id;
-    });
+    const clickedTodoData = todosData.find(
+      (todoData) => todoData.id === todo.id
+    );
     clickedTodoData.completed = !clickedTodoData.completed;
   }
   updateItemsLeft();
@@ -142,23 +139,17 @@ function todoClickHandler(event, todo) {
 }
 
 todos.forEach(function (todo) {
-  todo.addEventListener("click", function (event) {
-    todoClickHandler(event, todo);
-  });
+  todo.addEventListener("click", (event) => todoClickHandler(event, todo));
 });
 
-clearCompletedButton.addEventListener("click", function (event) {
-  todosData = todosData.filter(function (todoData) {
-    return !todoData.completed;
-  });
+clearCompletedButton.addEventListener("click", (event) => {
+  todosData = todosData.filter((todoData) => !todoData.completed);
   renderTodos();
   localStorage.setItem("todos", JSON.stringify(todosData));
 });
 
 function updateItemsLeft() {
-  const itemsLeft = todosData.filter(function (todoData) {
-    return !todoData.completed;
-  }).length;
+  const itemsLeft = todosData.filter((todoData) => !todoData.completed).length;
   itemsLeftPlaceholder.innerText = itemsLeft;
 }
 
