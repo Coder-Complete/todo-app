@@ -1,13 +1,39 @@
-- make with data approach completely
-  - explain state
-- explain that it’s a good precursor to react
-- explain why it’s not ideal either for animations (adding & removing) and rendering cost
-  - react abides by a similar pattern but does not have these issues
-    - there is a way to animate
-    - it has a way to only re-render certain things, not everything
-- backtrack data-centric idea to best solution
-- incorporate localstorage
+vid 3 - localstorage
+  - explain json
+  - explain localstorage
+  - execute localstorage
+  - explain with real db, you'll have to consider errors and timing
 
+vid 4 - clean code
+  - ternary conditionals
+  - arrow functions
+  - naming standardization with objects
+    - Themes, Filters, DataKeys, ClassNames, Images
+  - separate out more functions for readability
+    - todoTextNotEmpty
+    - addNewTodoData
+    - createTodo
+  - OOP
+    - first example - check if delete button clicked
+    - start doing Themes
+      - show that objects get ugly with "this" and need to "bind" methods to the object when using them in callbacks
+      - show also that can't use Theme.whatever in the properties itself b/c not instantiated yet
+    - introduce classes
+      - 'this' automatically assumes class instance
+      - arrow fxn methods - don't need to bind in constructor
+    - update localstorage
+    - update data array
+  - show how things can be now be broken into files (the object declarations can be sep files)
+    - webpack, webpack-cli, webpack-dev-server
+    - html webpack plugin - handles source in html file for dev/prod and copies html file into dist
+    - copy webpack plugin - copy files into dist
+      - do i need this for images? (obvi i do for img processing) - test without this and image processing
+        [[[ 
+          test: /\.(png|svg|jpg|jpeg|gif)$/i,
+          type: "asset/resource",
+        ]]]
+    - babel-loader - bundle files (import export)
+    - image-webpack-loader - process images - lossless compression
 
 things to do with js
 - x - light/dark mode

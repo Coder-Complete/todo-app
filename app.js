@@ -16,42 +16,11 @@ function generateUUID() {
   return `${s4() + s4()}-${s4()}-${s4()}-${s4()}-${s4() + s4() + s4()}`;
 }
 
-let todosData = [
-  {
-    id: generateUUID(),
-    text: "Complete online javascript course",
-    completed: true,
-  },
-  {
-    id: generateUUID(),
-    text: "Jog around the park 3x",
-    completed: false,
-  },
-  {
-    id: generateUUID(),
-    text: "10 minutes meditation",
-    completed: false,
-  },
-  {
-    id: generateUUID(),
-    text: "Read for 1 hour",
-    completed: false,
-  },
-  {
-    id: generateUUID(),
-    text: "Pick up groceries",
-    completed: false,
-  },
-  {
-    id: generateUUID(),
-    text: "Complete Todo App on Frontend Mentor",
-    completed: false,
-  },
-];
+let todosData = JSON.parse(localStorage.getItem("todos")) || [];
 
 function getThemeFromDatabase() {
   // contacts database asking for theme, and receives the theme
-  const receivedTheme = "light-theme";
+  const receivedTheme = localStorage.getItem("theme") || "light-theme";
   return receivedTheme;
 }
 
@@ -64,12 +33,13 @@ if (currentTheme === "light-theme") {
 }
 
 modeIcon.addEventListener("click", function (event) {
-  if (theme === "light-theme") {
-    theme = "dark-theme";
+  if (currentTheme === "light-theme") {
+    currentTheme = "dark-theme";
   } else {
-    theme = "light-theme";
+    currentTheme = "light-theme";
   }
-  document.body.className = theme;
+  document.body.className = currentTheme;
+  localStorage.setItem("theme", currentTheme);
 });
 
 createTodoForm.addEventListener("submit", function (event) {
@@ -82,6 +52,8 @@ createTodoForm.addEventListener("submit", function (event) {
       completed: false,
     });
     renderTodos();
+    updateItemsLeft();
+    localStorage.setItem("todos", JSON.stringify(todosData));
   }
   createTodoForm.reset();
 });
@@ -118,7 +90,8 @@ function updateFilterUI() {
   });
 }
 
-let selectedFilter = "all"; // 'all', 'active', 'completed'
+let selectedFilter = localStorage.getItem("filter") || "all"; // 'all', 'active', 'completed'
+console.log(selectedFilter);
 
 filters.forEach(function (filter) {
   filter.addEventListener("click", function (event) {
@@ -127,6 +100,7 @@ filters.forEach(function (filter) {
       selectedFilter = clickedFilter;
       renderTodos();
       updateFilterUI();
+      localStorage.setItem("filter", clickedFilter);
     }
   });
 });
@@ -164,6 +138,7 @@ function todoClickHandler(event, todo) {
   }
   updateItemsLeft();
   renderTodos();
+  localStorage.setItem("todos", JSON.stringify(todosData));
 }
 
 todos.forEach(function (todo) {
@@ -177,6 +152,7 @@ clearCompletedButton.addEventListener("click", function (event) {
     return !todoData.completed;
   });
   renderTodos();
+  localStorage.setItem("todos", JSON.stringify(todosData));
 });
 
 function updateItemsLeft() {
@@ -188,3 +164,4 @@ function updateItemsLeft() {
 
 updateItemsLeft();
 renderTodos();
+updateFilterUI();
