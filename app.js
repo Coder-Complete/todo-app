@@ -8,37 +8,50 @@ const clearCompletedButton = document.querySelector(".clear-completed-button");
 const itemsLeftPlaceholder = document.querySelector(".items-left");
 const filters = document.querySelectorAll(".filter");
 
-const Themes = {
-  LIGHT: "light-theme",
-  DARK: "dark-theme",
+const DataKeys = {
+  TODOS: "todos",
+  FILTER: "filter",
 };
+class ThemeManager {
+  static LIGHT = "light-theme";
+  static DARK = "dark-theme";
+  static DATA_KEY = "theme";
 
-function getThemeFromDatabase() {
-  // contacts database asking for theme, and receives the theme
-  return localStorage.getItem(DataKeys.THEME) || Themes.LIGHT;
+  constructor() {
+    this.current = this.getThemeFromDatabase();
+  }
+
+  getThemeFromDatabase() {
+    // contacts database asking for theme, and receives the theme
+    return localStorage.getItem(ThemeManager.DATA_KEY) || ThemeManager.LIGHT;
+  }
+
+  initialize() {
+    document.body.className = this.current;
+    this.setupEventListeners();
+  }
+
+  setupEventListeners() {
+    modeIcon.addEventListener("click", (event) => this.toggle());
+  }
+
+  toggle() {
+    this.current =
+      this.current === ThemeManager.LIGHT
+        ? ThemeManager.DARK
+        : ThemeManager.LIGHT;
+    document.body.className = this.current;
+    localStorage.setItem(ThemeManager.DATA_KEY, this.current);
+  }
 }
 
-let currentTheme = getThemeFromDatabase();
-
-document.body.className =
-  currentTheme === Themes.LIGHT ? Themes.LIGHT : Themes.DARK;
-
-modeIcon.addEventListener("click", (event) => {
-  currentTheme = currentTheme === Themes.LIGHT ? Themes.DARK : Themes.LIGHT;
-  document.body.className = currentTheme;
-  localStorage.setItem(DataKeys.THEME, currentTheme);
-});
+const themeManager = new ThemeManager();
+themeManager.initialize();
 
 const Filters = {
   ALL: "all",
   ACTIVE: "active",
   COMPLETED: "completed",
-};
-
-const DataKeys = {
-  TODOS: "todos",
-  FILTER: "filter",
-  THEME: "theme",
 };
 
 const ClassNames = {
