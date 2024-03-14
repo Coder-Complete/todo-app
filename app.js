@@ -8,6 +8,77 @@ const clearCompletedButton = document.querySelector(".clear-completed-button");
 const itemsLeftPlaceholder = document.querySelector(".items-left");
 const filters = document.querySelectorAll(".filter");
 
+const Themes = {
+  LIGHT: "light-theme",
+  DARK: "dark-theme",
+};
+
+function getThemeFromDatabase() {
+  // contacts database asking for theme, and receives the theme
+  return localStorage.getItem(DataKeys.THEME) || Themes.LIGHT;
+}
+
+let currentTheme = getThemeFromDatabase();
+
+document.body.className =
+  currentTheme === Themes.LIGHT ? Themes.LIGHT : Themes.DARK;
+
+modeIcon.addEventListener("click", (event) => {
+  currentTheme = currentTheme === Themes.LIGHT ? Themes.DARK : Themes.LIGHT;
+  document.body.className = currentTheme;
+  localStorage.setItem(DataKeys.THEME, currentTheme);
+});
+
+const Filters = {
+  ALL: "all",
+  ACTIVE: "active",
+  COMPLETED: "completed",
+};
+
+const DataKeys = {
+  TODOS: "todos",
+  FILTER: "filter",
+  THEME: "theme",
+};
+
+const ClassNames = {
+  todo: {
+    BASE: ["bar", "todo"],
+    COMPLETED: "completed",
+    CIRCLE: "circle",
+    DELETE_BUTTON: "delete-button",
+    DELETE_IMAGE: "delete-image",
+    TEXT: "todo-text",
+  },
+  filter: {
+    SELECTED: "selected",
+  },
+};
+
+const Images = {
+  cross: {
+    path: "images/icon-cross.svg",
+    altText: "",
+  },
+};
+
+const DeleteButton = {
+  classNames: {
+    DELETE_BUTTON: "delete-button",
+    DELETE_IMAGE: "delete-image",
+  },
+  image: {
+    path: "images/icon-cross.svg",
+    altText: "",
+  },
+  clicked(event) {
+    return (
+      event.target.classList.contains(this.classNames.DELETE_BUTTON) ||
+      event.target.classList.contains(this.classNames.DELETE_IMAGE)
+    );
+  },
+};
+
 function generateUUID() {
   const s4 = () =>
     Math.floor((1 + Math.random()) * 0x10000)
@@ -16,23 +87,7 @@ function generateUUID() {
   return `${s4() + s4()}-${s4()}-${s4()}-${s4()}-${s4() + s4() + s4()}`;
 }
 
-let todosData = JSON.parse(localStorage.getItem("todos")) || [];
-
-function getThemeFromDatabase() {
-  // contacts database asking for theme, and receives the theme
-  return localStorage.getItem("theme") || "light-theme";
-}
-
-let currentTheme = getThemeFromDatabase();
-
-document.body.className =
-  currentTheme === "light-theme" ? "light-theme" : "dark-theme";
-
-modeIcon.addEventListener("click", (event) => {
-  currentTheme = currentTheme === "light-theme" ? "dark-theme" : "light-theme";
-  document.body.className = currentTheme;
-  localStorage.setItem("theme", currentTheme);
-});
+let todosData = JSON.parse(localStorage.getItem(DataKeys.TODOS)) || [];
 
 function textNotEmpty(text) {
   return text.trim().length > 0;
@@ -53,7 +108,7 @@ createTodoForm.addEventListener("submit", (event) => {
     addTodo(newTodoText);
     renderTodos();
     updateItemsLeft();
-    localStorage.setItem("todos", JSON.stringify(todosData));
+    localStorage.setItem(DataKeys.TODOS, JSON.stringify(todosData));
   }
   createTodoForm.reset();
 });
@@ -61,15 +116,15 @@ createTodoForm.addEventListener("submit", (event) => {
 function createTodo(todoData) {
   let todo = document.createElement("div");
   todo.id = todoData.id;
-  todo.classList.add("bar", "todo");
+  todo.classList.add(...ClassNames.todo.BASE);
   if (todoData.completed) {
-    todo.classList.add("completed");
+    todo.classList.add(ClassNames.todo.COMPLETED);
   }
   todo.innerHTML = `
-    <span class="circle"></span>
-    <span class="todo-text">${todoData.text}</span>
-    <span class="delete-button">
-      <img class="delete-image" src="images/icon-cross.svg" alt=""/>
+    <span class="${ClassNames.todo.CIRCLE}"></span>
+    <span class="${ClassNames.todo.TEXT}">${todoData.text}</span>
+    <span class="${ClassNames.todo.DELETE_BUTTON}">
+      <img class="${ClassNames.todo.DELETE_IMAGE}" src="${Images.cross.path}" alt="${Images.cross.altText}"/>
     </span>
   `;
   todo.addEventListener("click", (event) => todoClickHandler(event, todo));
@@ -86,14 +141,14 @@ function displayTodos(todosData) {
 function updateFilterUI() {
   filters.forEach((filter) => {
     if (filter.innerText.toLowerCase() === selectedFilter) {
-      filter.classList.add("selected");
+      filter.classList.add(ClassNames.filter.SELECTED);
     } else {
-      filter.classList.remove("selected");
+      filter.classList.remove(ClassNames.filter.SELECTED);
     }
   });
 }
 
-let selectedFilter = localStorage.getItem("filter") || "all"; // 'all', 'active', 'completed'
+let selectedFilter = localStorage.getItem(DataKeys.FILTER) || Filters.ALL;
 
 filters.forEach(function (filter) {
   filter.addEventListener("click", (event) => {
@@ -102,15 +157,15 @@ filters.forEach(function (filter) {
       selectedFilter = clickedFilter;
       renderTodos();
       updateFilterUI();
-      localStorage.setItem("filter", clickedFilter);
+      localStorage.setItem(DataKeys.FILTER, clickedFilter);
     }
   });
 });
 
 function determineTodosToDisplayBasedOnFilter(filter) {
-  return filter === "active"
+  return filter === Filters.ACTIVE
     ? todosData.filter((todoData) => !todoData.completed)
-    : filter === "completed"
+    : filter === Filters.COMPLETED
     ? todosData.filter((todoData) => todoData.completed)
     : todosData;
 }
@@ -120,12 +175,8 @@ function renderTodos() {
   let todosToDisplay = determineTodosToDisplayBasedOnFilter(selectedFilter);
   displayTodos(todosToDisplay);
 }
-
 function todoClickHandler(event, todo) {
-  if (
-    event.target.classList.contains("delete-button") ||
-    event.target.classList.contains("delete-image")
-  ) {
+  if (DeleteButton.clicked(event)) {
     todosData = todosData.filter((todoData) => todoData.id !== todo.id);
   } else {
     const clickedTodoData = todosData.find(
@@ -135,7 +186,7 @@ function todoClickHandler(event, todo) {
   }
   updateItemsLeft();
   renderTodos();
-  localStorage.setItem("todos", JSON.stringify(todosData));
+  localStorage.setItem(DataKeys.TODOS, JSON.stringify(todosData));
 }
 
 todos.forEach(function (todo) {
@@ -145,7 +196,7 @@ todos.forEach(function (todo) {
 clearCompletedButton.addEventListener("click", (event) => {
   todosData = todosData.filter((todoData) => !todoData.completed);
   renderTodos();
-  localStorage.setItem("todos", JSON.stringify(todosData));
+  localStorage.setItem(DataKeys.TODOS, JSON.stringify(todosData));
 });
 
 function updateItemsLeft() {

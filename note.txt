@@ -11,18 +11,17 @@ vid 4 - clean code
     - x - todoTextNotEmpty
     - x - addNewTodoData
     - x - createTodo
-  - naming standardization with objects
-    - Themes, Filters, DataKeys, ClassNames, Images
+  - x - naming standardization with objects
+    - x - Themes, Filters, DataKeys, ClassNames, Images
   - OOP
-    - first example - check if delete button clicked
+    - x - first example - check if delete button clicked
     - start doing Themes
       - show that objects get ugly with "this" and need to "bind" methods to the object when using them in callbacks
       - show also that can't use Theme.whatever in the properties itself b/c not instantiated yet
     - introduce classes
-      - 'this' automatically assumes class instance
+      - 'this' assumes class instance
       - arrow fxn methods - don't need to bind in constructor
-    - update localstorage
-    - update data array
+    - themeManager, filterManager, todoMager
   - show how things can be now be broken into files (the object declarations can be sep files)
     - webpack, webpack-cli, webpack-dev-server
     - html webpack plugin - handles source in html file for dev/prod and copies html file into dist
