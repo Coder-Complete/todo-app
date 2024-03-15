@@ -15,43 +15,43 @@ export class FilterManager {
     this.current = this.getFilterFromDatabase();
   }
 
-  applyChange() {
+  applyChange = () => {
     localStorage.setItem(FilterManager.DATA_KEY, this.current);
     this.updateFilterUI();
     this.renderTodos();
-  }
+  };
 
-  getFilterFromDatabase() {
+  getFilterFromDatabase = () => {
     // contacts database asking for theme, and receives the theme
     return (
       localStorage.getItem(FilterManager.DATA_KEY) || FilterManager.Filters.ALL
     );
-  }
+  };
 
-  initialize() {
+  initialize = () => {
     this.setupEventListeners();
     this.updateFilterUI();
-  }
+  };
 
   setRenderTodos(todoManagerRenderTodos) {
     this.renderTodos = todoManagerRenderTodos;
   }
 
-  setupEventListeners() {
+  setupEventListeners = () => {
     filters.forEach((filter) => {
       filter.addEventListener("click", (event) => this.switch(event));
     });
-  }
+  };
 
-  switch(event) {
+  switch = (event) => {
     let clickedFilter = event.target.innerText.toLowerCase();
     if (clickedFilter !== this.current) {
       this.current = clickedFilter;
       this.applyChange();
     }
-  }
+  };
 
-  updateFilterUI() {
+  updateFilterUI = () => {
     filters.forEach((filter) => {
       if (filter.innerText.toLowerCase() === this.current) {
         filter.classList.add(FilterManager.ClassNames.SELECTED);
@@ -59,7 +59,7 @@ export class FilterManager {
         filter.classList.remove(FilterManager.ClassNames.SELECTED);
       }
     });
-  }
+  };
 }
 
 export default new FilterManager();

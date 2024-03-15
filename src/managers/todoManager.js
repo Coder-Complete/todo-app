@@ -27,22 +27,22 @@ class TodoManager {
     this.filterManager.setRenderTodos(this.renderTodos);
   }
 
-  addTodo(text) {
+  addTodo = (text) => {
     this.data.unshift({
       id: generateUUID(),
       text,
       completed: false,
     });
     this.applyChanges();
-  }
+  };
 
-  applyChanges() {
+  applyChanges = () => {
     localStorage.setItem(TodoManager.DATA_KEY, JSON.stringify(this.data));
     this.renderTodos();
     this.updateItemsLeft();
-  }
+  };
 
-  createTodo(todoData) {
+  createTodo = (todoData) => {
     let todo = document.createElement("div");
     todo.id = todoData.id;
     todo.classList.add(...TodoManager.ClassNames.BASE);
@@ -60,51 +60,50 @@ class TodoManager {
       this.todoClickHandler(event, todo)
     );
     return todo;
-  }
+  };
 
-  determineTodosToDisplayBasedOnFilter(filter) {
+  determineTodosToDisplayBasedOnFilter = (filter) => {
     return filter === FilterManager.Filters.ACTIVE
       ? this.getActiveTodos()
       : filter === FilterManager.Filters.COMPLETED
       ? this.getCompletedTodos()
       : this.data;
-  }
+  };
 
-  displayTodos(todosData) {
+  displayTodos = (todosData) => {
     todosData.forEach((todoData) => {
       let newTodo = this.createTodo(todoData);
       todoContainer.append(newTodo);
     });
-  }
+  };
 
-  getActiveTodos() {
+  getActiveTodos = () => {
     return this.data.filter((todoData) => !todoData.completed);
-  }
+  };
 
-  getCompletedTodos() {
+  getCompletedTodos = () => {
     return this.data.filter((todoData) => todoData.completed);
-  }
+  };
 
-  getTodosFromDatabase() {
+  getTodosFromDatabase = () => {
     return JSON.parse(localStorage.getItem(TodoManager.DATA_KEY)) || [];
-  }
+  };
 
-  initialize() {
+  initialize = () => {
     this.setupEventListeners();
     this.updateItemsLeft();
     this.renderTodos();
-  }
+  };
 
-  renderTodos() {
+  renderTodos = () => {
     todoContainer.innerHTML = "";
-    console.log(this.filterManager);
     let todosToDisplay = this.determineTodosToDisplayBasedOnFilter(
       this.filterManager.current
     );
     this.displayTodos(todosToDisplay);
-  }
+  };
 
-  setupEventListeners() {
+  setupEventListeners = () => {
     clearCompletedButton.addEventListener("click", (event) => {
       this.data = this.getActiveTodos();
       this.applyChanges();
@@ -122,9 +121,9 @@ class TodoManager {
         this.todoClickHandler(event, todo)
       );
     });
-  }
+  };
 
-  todoClickHandler(event, todo) {
+  todoClickHandler = (event, todo) => {
     if (DeleteButton.clicked(event)) {
       this.data = this.data.filter((todoData) => todoData.id !== todo.id);
     } else {
@@ -134,12 +133,12 @@ class TodoManager {
       clickedTodoData.completed = !clickedTodoData.completed;
     }
     this.applyChanges();
-  }
+  };
 
-  updateItemsLeft() {
+  updateItemsLeft = () => {
     const itemsLeft = this.getActiveTodos().length;
     itemsLeftPlaceholder.innerText = itemsLeft;
-  }
+  };
 }
 
 export default new TodoManager(filterManager);
